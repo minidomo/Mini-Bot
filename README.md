@@ -10,8 +10,14 @@ Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/co
 ```
 - `ff` - Surrender your current game.  
   Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/connect4.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js)
+  ```
+  !!c4 ff
+  ```
 - `help` - Shows the sub-commands of `!!c4`.  
   Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/connect4.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js)
+  ```
+  !!c4 help
+  ```
 - `p [coordinate]` - Places your piece on the board.  
   Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/connect4.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js)
   ```
