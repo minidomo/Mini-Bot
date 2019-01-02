@@ -3,7 +3,7 @@ I was made this for my friend's server for fun and experience.
 I currently host this on my own PC using [Node.js](https://nodejs.org/en/).
 ## Commands
 Prefix - `!!`  
-`c4` - Base command for Connect 4 game (Currently does not support use multiple servers).  
+`c4` - Base command for Connect 4 game (Currently does not support games in parallel with different servers).  
 Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/connect4.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js) 
 ```
 !!c4 [sub-command]
