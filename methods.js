@@ -1,13 +1,6 @@
-const fs = require('fs');
+const Settings = require('./settings.json');
 
-var ID;
-fs.readFile('CIGATC_blocked.txt', 'utf8', (err, data) => {
-    if (err) {
-        console.log(err);
-        ID = '0';
-    } else
-        ID = data;
-});
+var ID = Settings['cgaitcBlockID'];
 
 const canIGetA_InTheChat = {
     canIGetARegex: /can\s+i\s+get\s+a\s+/,

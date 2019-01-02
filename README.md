@@ -1,6 +1,7 @@
 # Mini Bot (Work-In-Progress)
 I was made this for my friend's server for fun and experience.  
-I currently host this on my own PC using [Node.js](https://nodejs.org/en/).
+I currently host this on my own PC using [Node.js](https://nodejs.org/en/).  
+Important Note: `template.json` is a template for what `settings.json` should look like. Rename `template.json` to `settings.json` or create a new `settings.json` file and fill whichever values you need, **especially the token**.
 ## Commands
 Prefix - `!!`  
 `c4` - Base command for Connect 4 game (Currently does not support games in parallel with different servers).  
@@ -43,7 +44,7 @@ Primary files: [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/co
 ```
 !!randomtard
 ```
-`syscmd [grant/deny] [user] [command]` - Grants or denies the power to use certain commands. Currently only one user's ID is supported. ID can be set by creating a `syscmd.txt` file and putting in the user's ID.  
+`syscmd [grant/deny] [user] [command]` - Grants or denies the power to use certain commands. Currently only one user's ID is supported. ID can be set by using/creating a `"syscmdID"` key in the `settings.json` file with the value as a the user's ID.  
 Primary files: [systemcommand.js](https://github.com/MiniDomo/Mini-Bot/blob/master/systemcommand.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js)
 ```
 !!syscmd grant @user help
@@ -75,7 +76,7 @@ Primary files: [music.js](https://github.com/MiniDomo/Mini-Bot/blob/master/music
 !!stop
 ```
 ## Features
-`Can I get a ___ in the chat` - Uses regex to return what the user put in the `___` in the chat. In addition, it blocks a user from using this feature, in my case Somchu, and returns a nasty message. Currently blocks only one user and can be modified by creating a `CIGATC_blocked.txt` file and putting in the user's ID.  
+`Can I get a ___ in the chat` - Uses regex to return what the user put in the `___` in the chat. In addition, it blocks a user from using this feature, in my case Somchu, and returns a nasty message. Currently blocks only one user and can be modified by using/creating a `"cgaitcBlockID"` key in the `settings.json` file with the value as the user's ID that you want to block.
 Primary files: [index.js](https://github.com/MiniDomo/Mini-Bot/blob/master/index.js), [methods.js](https://github.com/MiniDomo/Mini-Bot/blob/master/methods.js)
 <br>
 <br>

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const fs = require('fs');
+const Settings = require('./settings.json');
 const Methods = require('./methods.js');
 const CommandList = require('./commands.js').Commands;
 const prefix = '!!';
@@ -38,8 +38,4 @@ client.on('message', msg => {
     }
 });
 
-fs.readFile('token.txt', 'utf8', (err, data) => {
-    if (err)
-        throw err;
-    client.login(data);
-});
+client.login(Settings['token']);

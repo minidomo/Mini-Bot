@@ -1,14 +1,7 @@
-const fs = require('fs');
 const Methods = require('./methods.js');
+const Settings = require('./settings.json');
 
-var AdvancedUserID;
-fs.readFile('syscmd.txt', 'utf8', (err, data) => {
-    if (err) {
-        console.log(err);
-        AdvancedUserID = '0';
-    } else
-        AdvancedUserID = data;
-});
+var AdvancedUserID = Settings['syscmdID'];
 
 let denyUsers = {
     // structure
