@@ -1,5 +1,5 @@
 # Mini Bot (Work-In-Progress)
-I was made this for my friend's server for fun and experience.  
+I made this for my friend's server for fun and experience.  
 I currently host this on my own PC using [Node.js](https://nodejs.org/en/).  
 Important Note: `template.json` is a template for what `settings.json` should look like. Rename `template.json` to `settings.json` or create a new `settings.json` file and fill whichever values you need, **especially the token**.
 ## Commands
@@ -24,7 +24,7 @@ Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/co
   ```
   !!c4 p [A/a/B/b/C/c/D/d/E/e/F/f/G/g]
   ```
-- `start [user1] [user2]` - Start a game with another player. Only one game can be in progress.  
+- `start [user1] [user2]` - Start a game with another player. Currently, one of the tagged users must also be the one to start the game and only one game can be in progress. I plan to change this in the future.  
   Primary files: [connect4.js](https://github.com/MiniDomo/Mini-Bot/blob/master/connect4.js), [commands.js](https://github.com/MiniDomo/Mini-Bot/blob/master/commands.js)
   ```
   !!c4 start @user1 @user2
