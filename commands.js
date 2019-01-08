@@ -6,6 +6,7 @@ class CommandObj {
 }
 
 const Discord = require('discord.js');
+const fs = require('fs');
 
 // my other commands
 const Methods = require('./methods.js');
@@ -182,6 +183,18 @@ const Commands = {
                 Music.endCurrentAudio(id);
                 msg.channel.send('Skipped song.');
             }
+        }
+    },
+    //
+    speak: {
+        desc: 'The bot speaks.',
+        execute: function (msg, args) {
+            fs.readFile('speak.txt', 'utf8', (err, data) => {
+                if (data.length === 0)
+                    msg.channel.send('I have nothing to say right now.');
+                else
+                    msg.channel.send(data);
+            });
         }
     },
     //
