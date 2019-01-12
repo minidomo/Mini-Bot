@@ -16,6 +16,11 @@ client.on('ready', () => {
 client.on('message', msg => {
     msg.content = msg.content.trim();
     console.log(msg.createdAt + ' ' + msg.author.username + ' ' + msg.author.id);
+    if (msg.content.length > 0)
+        console.log(msg.content);
+    msg.attachments.map((val, key) => {
+        console.log(val.url);
+    });
     if (msg.content.startsWith(prefix) && msg.author.id !== client.user.id) {
         let contentParts = Methods.getArguments(msg.content);
         if (!Methods.isUndefined(CommandList[contentParts.command])) {

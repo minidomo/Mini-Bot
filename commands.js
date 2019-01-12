@@ -121,9 +121,10 @@ const Commands = {
                 msg.channel.send('There are no songs in queue.');
             } else {
                 let first = queue[0];
-                msg.channel.send('`Current` ' + first.title + ' by ' + first.author + ' `[' + first.duration + ']`');
+                let string = '`Current` ' + first.title + ' by ' + first.author + ' `[' + first.duration + ']`\n';
                 for (let x = 1; x < queue.length; x++)
-                    msg.channel.send('`' + x + '` ' + queue[x].title + ' by ' + queue[x].author + ' `[' + queue[x].duration + ']`');
+                    string += '`' + x + '` ' + queue[x].title + ' by ' + queue[x].author + ' `[' + queue[x].duration + ']`\n';
+                msg.channel.send(string);
             }
         }
     },

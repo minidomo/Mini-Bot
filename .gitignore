@@ -3,3 +3,4 @@
 *.class
 settings.json
 node_modules/
+testing/
