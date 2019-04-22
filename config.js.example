@@ -1,0 +1,71 @@
+'use strict';
+
+let config = {};
+
+// discord token
+config.token = '';
+
+// command prefix
+config.prefix = '!!';
+
+// features
+config.features = {
+    'active': ['in_the_chat'],
+    'inactive': []
+};
+
+// commands
+config.commands = {
+    'c4': {
+        visible: true,
+        useable: true,
+        desc: 'Connect 4 base command. `!!c4 help` for sub-commands.',
+        usage: 'c4',
+        subcommands: {
+            'ff': {
+                visible: true,
+                useable: true,
+                desc: 'Surrender your current game.',
+                usage: 'ff',
+                subcommands: null
+            },
+            'help': {
+                visible: true,
+                useable: true,
+                desc: 'Shows the sub-commands of `!!c4.`',
+                usage: 'help',
+                subcommands: null
+            },
+            'p': {
+                visible: true,
+                useable: true,
+                desc: 'Places your piece on the board.',
+                usage: 'p [coordinate]',
+                subcommands: null
+            },
+            'start': {
+                visible: true,
+                useable: true,
+                desc: 'Start a game with another player.',
+                usage: 'start [user1] [user2]',
+                subcommands: null
+            }
+        }
+    },
+    'help': {
+        visible: true,
+        useable: true,
+        desc: 'Shows the available commands.',
+        usage: 'help',
+        subcommands: null
+    },
+    'info': {
+        visible: true,
+        useable: true,
+        desc: 'Shows information about the bot.',
+        usage: 'info',
+        subcommands: null
+    }
+};
+
+module.exports = config;
