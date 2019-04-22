@@ -1,16 +1,15 @@
 {
-  "name": "minibot",
-  "version": "1.0.0",
-  "description": "",
+  "name": "mini-bot",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "minidomo",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "opusscript": "0.0.6",
-    "ytdl-core": "^0.28.0"
-  }
+    "discord.js": "^11.4.2"
+  },
+  "devDependencies": {},
+  "description": ""
 }
