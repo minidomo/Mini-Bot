@@ -16,8 +16,7 @@ client.on('message', msg => {
     if (!msg.author.bot)
         if (msg.content.startsWith(config.prefix)) {
             let obj = commandHandler.getArguments(msg, config.prefix);
-            console.log(obj);
-            let a = commandHandler.handle(msg, obj, config.commands);
+            let success = commandHandler.handle(msg, obj, config.commands);
         } else {
             mainHandler.handleFeature(msg, config.features.active);
         }

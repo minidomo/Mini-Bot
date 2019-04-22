@@ -9,6 +9,7 @@ const Emotes = {
     LOSE: [':thinking:', ':disappointed:', ':tired_face:', ':rage:', ':sob:', ':second_place:', ':interrobang:']
 };
 
+// number & 1 === number % 2
 let Connect4 = function () {
     this.canFF = (msg) => {
         if (getGame(msg))
@@ -20,8 +21,8 @@ let Connect4 = function () {
     this.ff = (msg) => {
         let game = getGame(msg);
         let mentions = idToMentions(msg.author.id);
-        game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1])) + 1;
-        printEmbed(msg, getEmbed(getBoard(game) + lowerDesc(game)));
+        game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
+        printEmbed(msg, game);
         removeGame(msg);
     };
 
@@ -31,7 +32,12 @@ let Connect4 = function () {
             msg.channel.send('You are not playing a Connect 4 game.');
             return false;
         }
-        if (!isTurn(game, msg.author.id)) {
+        let isTurn = () => {
+            let mentions = idToMentions(msg.author.id);
+            let cur = game.users[game.turn & 1]
+            return cur === mentions[0] || cur === mentions[1];
+        };
+        if (!isTurn()) {
             msg.channel.send('Is it not your turn.');
             return false;
         }
@@ -54,16 +60,15 @@ let Connect4 = function () {
         let r = 0;
         while (r < MAXR && game.board[r][c] === Piece.WHITE)
             r++;
-        game.board[--r][c] = game.colors[game.turn % 2];
+        game.board[--r][c] = game.colors[game.turn & 1];
         if (win(game, r, c)) {
-            game.winner = game.turn % 2 + 1;
+            game.winner = game.turn & 1;
         } else {
             game.turn++;
-            if (game.turn === MAXTURNS) {
-                game.winner = 3;
-            }
+            if (game.turn === MAXTURNS)
+                game.winner = 2;
         }
-        printEmbed(msg, getEmbed(getBoard(game) + lowerDesc(game)));
+        printEmbed(msg, game);
         if (typeof game.winner !== 'undefined')
             removeGame(msg);
     };
@@ -114,129 +119,115 @@ let Connect4 = function () {
             game.colors.push(Piece.BLUE, Piece.RED);
         for (let r = 0; r < MAXR; r++) {
             game.board.push([]);
-            if (r < 6)
+            if (r < MAX_PLAYABLE_ROWS)
                 for (let c = 0; c < MAXC; c++)
                     game.board[r].push(Piece.WHITE);
             else
                 'abcdefg'.split('').forEach(c => game.board[r].push(`:regional_indicator_${c}:`));
         }
         servers[msg.guild.id].push(game);
-        printEmbed(msg, getEmbed(getBoard(game) + lowerDesc(game)));
+        printEmbed(msg, game);
     };
 };
 
-let removeGame = (msg) => {
+let removeGame = msg => {
     let guild = msg.guild.id;
     for (let x in servers[guild]) {
         let mentions = idToMentions(msg.author.id);
-        if (servers[guild][x].users.indexOf(mentions[0]) >= 0 || servers[guild][x].users.indexOf(mentions[1]) >= 0) {
-            servers[guild].splice(x, 1);
-            return;
-        }
+        for (let a = 0; a < 2; a++)
+            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1]) {
+                servers[guild].splice(x, 1);
+                return;
+            }
     }
 };
 
 let win = (game, r, c) => {
-    let WE = checkWinCounter(game, r, c, 0, -1) + checkWinCounter(game, r, c, 0, 1);
-    if (WE >= 3)
-        return true;
-    let NS = checkWinCounter(game, r, c, -1, 0) + checkWinCounter(game, r, c, 1, 0);
-    if (NS >= 3)
-        return true;
-    let NWSE = checkWinCounter(game, r, c, -1, -1) + checkWinCounter(game, r, c, 1, 1);
-    if (NWSE >= 3)
-        return true;
-    let SWNE = checkWinCounter(game, r, c, 1, -1) + checkWinCounter(game, r, c, -1, 1);
-    if (SWNE >= 3)
-        return true;
+    let count = (dx, dy) => {
+        let count = 0;
+        let color = game.board[r][c];
+        r += dx;
+        c += dy;
+        while (r >= 0 && c >= 0 && r < MAX_PLAYABLE_ROWS && c < MAXC && count < 3 && game.board[r][c] === color) {
+            r += dx;
+            c += dy;
+            count++;
+        }
+        return count;
+    };
+    let dx = [0, 0, -1, 1, -1, 1, 1, -1];
+    let dy = [-1, 1, 0, 0, -1, 1, -1, 1];
+    for (let x = 0; x < dx.length; x += 2) {
+        let c = count(dx[x], dy[x]) + count(dx[x + 1], dy[x + 1]);
+        if (c >= 3)
+            return true;
+    }
     return false;
 };
 
-let checkWinCounter = (game, r, c, dx, dy) => {
-    let count = 0;
-    let color = game.board[r][c];
-    r += dx;
-    c += dy;
-    while (r >= 0 && c >= 0 && r < MAX_PLAYABLE_ROWS && c < MAXC && count < 3 && game.board[r][c] === color) {
-        r += dx;
-        c += dy;
-        count++;
-    }
-    return count;
-};
-
-let idToMentions = (id) => {
+let idToMentions = id => {
     return [`<@${id}>`, `<@!${id}>`];
 };
 
-let mentionToID = (mention) => {
+let mentionToID = mention => {
     let id = mention;
     id = id.replace(/^<@!?/g, '').replace(/>$/g, '');
     return id;
-};
-
-let isTurn = (game, id) => {
-    let mentions = idToMentions(id);
-    let cur = game.users[game.turn % 2]
-    return cur === mentions[0] || cur === mentions[1];
 };
 
 let getGameByMentions = (guild, mentions) => {
     if (!servers[guild])
         return undefined;
     for (let x in servers[guild])
-        if (servers[guild][x].users.indexOf(mentions[0]) >= 0 || servers[guild][x].users.indexOf(mentions[1]) >= 0)
-            return servers[guild][x];
+        for (let a = 0; a < 2; a++)
+            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1])
+                return servers[guild][x];
     return undefined;
 };
 
-let getGame = (msg) => {
+let getGame = msg => {
     let guild = msg.guild.id;
     if (!servers[guild])
         return undefined;
     for (let x in servers[guild]) {
         let mentions = idToMentions(msg.author.id);
-        if (servers[guild][x].users.indexOf(mentions[0]) >= 0 || servers[guild][x].users.indexOf(mentions[1]) >= 0)
-            return servers[guild][x];
+        for (let a = 0; a < 2; a++)
+            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1])
+                return servers[guild][x];
     }
     return undefined;
 };
 
-let getBoard = (game) => {
-    let res = '';
-    for (let r in game.board) {
-        for (let c in game.board[r])
-            res += game.board[r][c] + ' ';
-        res = res.substr(0, res.length - 1) + '\n';
-    }
-    return res;
-};
-
-let lowerDesc = (game) => {
-    let res = '\n';
-    if (game.winner) {
-        if (game.winner === 3)
-            res += `This match has ended as a draw!\n\n${game.users[0]} ${game.colors[0]}
-                \n${game.users[1]} ${game.colors[1]}`;
-        else
-            res += `${game.users[game.winner - 1]} ${game.colors[game.winner - 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
-                \n\n${game.users[game.winner % 2]} ${game.colors[game.winner % 2]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
-    } else if (game.forfeit) {
-        res += `${game.users[game.forfeit - 1]} ${game.colors[game.forfeit - 1]} surrenders! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
-            \n\n${game.users[game.forfeit % 2]} ${game.colors[game.forfeit % 2]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
-    } else
-        res += `${game.users[0]} ${game.colors[0]} vs ${game.users[1]} ${game.colors[1]}
-            \n\n${game.users[game.turn % 2]}'s Move`;
-    return res;
-};
-
-let getEmbed = (desc) => {
+let printEmbed = (msg, game) => {
+    let getBoard = game => {
+        let res = '';
+        for (let r in game.board) {
+            for (let c in game.board[r])
+                res += game.board[r][c] + ' ';
+            res = res.substr(0, res.length - 1) + '\n';
+        }
+        return res;
+    };
+    let lowerDesc = game => {
+        let res = '\n';
+        if (typeof game.winner !== 'undefined') {
+            if (game.winner === 2)
+                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.colors[0]}
+                    \n${game.users[1]} ${game.colors[1]}`;
+            else
+                res += `${game.users[game.winner]} ${game.colors[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
+                    \n\n${game.users[game.winner + 1 & 1]} ${game.colors[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
+        } else if (typeof game.forfeit !== 'undefined') {
+            res += `${game.users[game.forfeit]} ${game.colors[game.forfeit]} surrenders! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
+                \n\n${game.users[game.forfeit + 1 & 1]} ${game.colors[game.forfeit + 1 & 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
+        } else
+            res += `${game.users[0]} ${game.colors[0]} vs ${game.users[1]} ${game.colors[1]}
+                \n\n${game.users[game.turn & 1]}'s Move`;
+        return res;
+    };
+    let desc = getBoard(game) + lowerDesc(game);
     let embed = new (require('discord.js')).RichEmbed({ description: desc, title: 'Connect 4' });
     embed.setColor('AQUA');
-    return embed;
-};
-
-let printEmbed = (msg, embed) => {
     msg.channel.send(embed);
 };
 
