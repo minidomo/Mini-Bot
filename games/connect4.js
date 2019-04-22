@@ -78,6 +78,7 @@ let Connect4 = function () {
             msg.channel.send('Both players must be users.');
             return false;
         }
+        let mentionToID = mention => mention.replace(/^<@!?/g, '').replace(/>$/g, '');
         let u1 = mentionToID(user1);
         let u2 = mentionToID(user2);
         if (msg.guild.members.get(u1).user.bot || msg.guild.members.get(u2).user.bot) {
@@ -135,7 +136,7 @@ let removeGame = msg => {
     for (let x in servers[guild]) {
         let mentions = idToMentions(msg.author.id);
         for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1]) {
+            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1]) {
                 servers[guild].splice(x, 1);
                 return;
             }
@@ -146,11 +147,11 @@ let win = (game, r, c) => {
     let count = (dx, dy) => {
         let count = 0;
         let color = game.board[r][c];
-        r += dx;
-        c += dy;
-        while (r >= 0 && c >= 0 && r < MAX_PLAYABLE_ROWS && c < MAXC && count < 3 && game.board[r][c] === color) {
-            r += dx;
-            c += dy;
+        let row = r + dx;
+        let col = c + dy;
+        while (row >= 0 && col >= 0 && row < MAX_PLAYABLE_ROWS && col < MAXC && count < 3 && game.board[row][col] === color) {
+            row += dx;
+            col += dy;
             count++;
         }
         return count;
@@ -165,22 +166,14 @@ let win = (game, r, c) => {
     return false;
 };
 
-let idToMentions = id => {
-    return [`<@${id}>`, `<@!${id}>`];
-};
-
-let mentionToID = mention => {
-    let id = mention;
-    id = id.replace(/^<@!?/g, '').replace(/>$/g, '');
-    return id;
-};
+let idToMentions = id => [`<@${id}>`, `<@!${id}>`];
 
 let getGameByMentions = (guild, mentions) => {
     if (!servers[guild])
         return undefined;
     for (let x in servers[guild])
         for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1])
+            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1])
                 return servers[guild][x];
     return undefined;
 };
@@ -189,10 +182,10 @@ let getGame = msg => {
     let guild = msg.guild.id;
     if (!servers[guild])
         return undefined;
+    let mentions = idToMentions(msg.author.id);
     for (let x in servers[guild]) {
-        let mentions = idToMentions(msg.author.id);
         for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[a & 1] || servers[guild][x].users[a] === mentions[a + 1 & 1])
+            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1])
                 return servers[guild][x];
     }
     return undefined;
