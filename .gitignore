@@ -1,2 +1,6 @@
-config.js
+*.txt
+*.java
+*.class
+settings.json
 node_modules/
+testing/
