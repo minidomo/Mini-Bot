@@ -9,11 +9,15 @@ class CommandHandler {
         return obj;
     }
 
-    static handle(msg, obj, commands) {
-        if (typeof commands[obj.base] === 'undefined')
+    static handle(msg, obj, config) {
+        if (typeof config.commands[obj.base] === 'undefined') {
+            msg.channel.send(`Command ${config.prefix}${obj.base} not found.`);
             return false;
-        if (!commands[obj.base].useable)
+        }
+        if (!config.commands[obj.base].useable) {
+            msg.channel.send(`Command ${config.prefix}${obj.base} is not useable right now.`);
             return false;
+        }
         let cmd = require('../commands/' + obj.base);
         if (!cmd.pass(msg, obj.args))
             return false;

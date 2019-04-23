@@ -11,14 +11,14 @@ const Emotes = {
 
 // number & 1 === number % 2
 let Connect4 = function () {
-    this.canFF = (msg) => {
+    this.canFF = msg => {
         if (getGame(msg))
             return true;
         msg.channel.send('You are not playing a Connect 4 game.');
         return false;
     };
 
-    this.ff = (msg) => {
+    this.ff = msg => {
         let game = getGame(msg);
         let mentions = idToMentions(msg.author.id);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
@@ -90,8 +90,8 @@ let Connect4 = function () {
             servers[id] = [];
         let author = msg.author.id;
         if ((author === u1 && author !== u2) || (author !== u1 && author === u2)) {
-            let g1 = getGameByMentions(id, user1);
-            let g2 = getGameByMentions(id, user2);
+            let g1 = getGameByMention(id, user1);
+            let g2 = getGameByMention(id, user2);
             if (g1 || g2) {
                 msg.channel.send('At least one of the users is currently in a game.');
                 return false;
@@ -168,13 +168,12 @@ let win = (game, r, c) => {
 
 let idToMentions = id => [`<@${id}>`, `<@!${id}>`];
 
-let getGameByMentions = (guild, mentions) => {
+let getGameByMention = (guild, mention) => {
     if (!servers[guild])
         return undefined;
     for (let x in servers[guild])
-        for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1])
-                return servers[guild][x];
+        if (servers[guild][x].users[0] === mention || servers[guild][x].users[1] === mention)
+            return servers[guild][x];
     return undefined;
 };
 
@@ -192,7 +191,7 @@ let getGame = msg => {
 };
 
 let printEmbed = (msg, game) => {
-    let getBoard = game => {
+    let getBoard = () => {
         let res = '';
         for (let r in game.board) {
             for (let c in game.board[r])
@@ -201,7 +200,7 @@ let printEmbed = (msg, game) => {
         }
         return res;
     };
-    let lowerDesc = game => {
+    let lowerDesc = () => {
         let res = '\n';
         if (typeof game.winner !== 'undefined') {
             if (game.winner === 2)
@@ -218,7 +217,7 @@ let printEmbed = (msg, game) => {
                 \n\n${game.users[game.turn & 1]}'s Move`;
         return res;
     };
-    let desc = getBoard(game) + lowerDesc(game);
+    let desc = getBoard() + lowerDesc();
     let embed = new (require('discord.js')).RichEmbed({ description: desc, title: 'Connect 4' });
     embed.setColor('AQUA');
     msg.channel.send(embed);

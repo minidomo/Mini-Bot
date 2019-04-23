@@ -8,6 +8,9 @@ config.token = '';
 // command prefix
 config.prefix = '!!';
 
+// bot activity
+config.activity = { name: undefined, options: { url: undefined, type: undefined } };
+
 // features
 config.features = {
     'active': ['in_the_chat'],
@@ -19,7 +22,7 @@ config.commands = {
     'c4': {
         visible: true,
         useable: true,
-        desc: 'Connect 4 base command. `!!c4 help` for sub-commands.',
+        desc: `Connect 4 base command. \`${config.prefix}c4 help\` for sub-commands.`,
         usage: 'c4',
         subcommands: {
             'ff': {
@@ -32,7 +35,7 @@ config.commands = {
             'help': {
                 visible: true,
                 useable: true,
-                desc: 'Shows the sub-commands of `!!c4.`',
+                desc: `Shows the sub-commands of \`${config.prefix}c4\`.`,
                 usage: 'help',
                 subcommands: null
             },

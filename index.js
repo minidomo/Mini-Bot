@@ -9,6 +9,8 @@ const commandHandler = require('./handler/command');
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    if (config.activity.name)
+        client.user.setActivity(config.activity.name, config.activity.options);
 });
 
 client.on('message', msg => {
@@ -16,7 +18,7 @@ client.on('message', msg => {
     if (!msg.author.bot)
         if (msg.content.startsWith(config.prefix)) {
             let obj = commandHandler.getArguments(msg, config.prefix);
-            let success = commandHandler.handle(msg, obj, config.commands);
+            let success = commandHandler.handle(msg, obj, config);
         } else {
             mainHandler.handleFeature(msg, config.features.active);
         }
