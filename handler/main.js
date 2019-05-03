@@ -7,6 +7,7 @@ class MainHandler {
             `\tChannel: ${msg.channel.name}, ${msg.channel.id}\n` +
             `User: ${msg.author.tag}, ${msg.author.id}\n`;
         let first = true;
+        let a = new Map;
         msg.attachments.map((val, key) => {
             if (first) {
                 out += 'Attachments:\n';
@@ -20,8 +21,8 @@ class MainHandler {
     }
 
     static handleFeature(msg, commands) {
-        for (let x in commands) {
-            let feature = require('../ext/' + commands[x]);
+        for (let cmd of commands) {
+            let feature = require('../ext/' + cmd);
             if (feature.check(msg)) {
                 feature.run(msg);
                 return true;

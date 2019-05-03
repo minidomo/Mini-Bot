@@ -9,7 +9,13 @@ config.token = '';
 config.prefix = '!!';
 
 // bot activity
-config.activity = { name: undefined, options: { url: undefined, type: undefined } };
+config.activity = { name: null, options: { url: null, type: null } };
+
+// servers
+config.servers = {
+    connect4: {},
+    music: {}
+};
 
 // features
 config.features = {

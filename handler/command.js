@@ -10,7 +10,7 @@ class CommandHandler {
     }
 
     static handle(msg, obj, config) {
-        if (typeof config.commands[obj.base] === 'undefined') {
+        if (!(obj.base in config.commands)) {
             msg.channel.send(`Command ${config.prefix}${obj.base} not found.`);
             return false;
         }

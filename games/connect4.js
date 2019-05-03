@@ -1,6 +1,6 @@
 'use strict';
 
-let servers = {};
+const servers = require('../config').servers.connect4;
 const MAXR = 7, MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
 const Piece = { RED: ':red_circle:', BLUE: ':large_blue_circle:', WHITE: ':white_circle:' };
 const KeyMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6 };
@@ -69,7 +69,7 @@ let Connect4 = function () {
                 game.winner = 2;
         }
         printEmbed(msg, game);
-        if (typeof game.winner !== 'undefined')
+        if (!(winner in game))
             removeGame(msg);
     };
 
@@ -124,7 +124,8 @@ let Connect4 = function () {
                 for (let c = 0; c < MAXC; c++)
                     game.board[r].push(Piece.WHITE);
             else
-                'abcdefg'.split('').forEach(c => game.board[r].push(`:regional_indicator_${c}:`));
+                for (let c of 'abcdefg')
+                    game.board[r].push(`:regional_indicator_${c}:`);
         }
         servers[msg.guild.id].push(game);
         printEmbed(msg, game);
@@ -133,10 +134,10 @@ let Connect4 = function () {
 
 let removeGame = msg => {
     let guild = msg.guild.id;
-    for (let x in servers[guild]) {
+    for (let server of servers[guild]) {
         let mentions = idToMentions(msg.author.id);
         for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1]) {
+            if (server.users[a] === mentions[0] || server.users[a] === mentions[1]) {
                 servers[guild].splice(x, 1);
                 return;
             }
@@ -171,9 +172,9 @@ let idToMentions = id => [`<@${id}>`, `<@!${id}>`];
 let getGameByMention = (guild, mention) => {
     if (!servers[guild])
         return undefined;
-    for (let x in servers[guild])
-        if (servers[guild][x].users[0] === mention || servers[guild][x].users[1] === mention)
-            return servers[guild][x];
+    for (let server of servers[guild])
+        if (server.users[0] === mention || server.users[1] === mention)
+            return server;
     return undefined;
 };
 
@@ -182,10 +183,10 @@ let getGame = msg => {
     if (!servers[guild])
         return undefined;
     let mentions = idToMentions(msg.author.id);
-    for (let x in servers[guild]) {
+    for (let server of servers[guild]) {
         for (let a = 0; a < 2; a++)
-            if (servers[guild][x].users[a] === mentions[0] || servers[guild][x].users[a] === mentions[1])
-                return servers[guild][x];
+            if (server.users[a] === mentions[0] || server.users[a] === mentions[1])
+                return server;
     }
     return undefined;
 };
@@ -193,9 +194,9 @@ let getGame = msg => {
 let printEmbed = (msg, game) => {
     let getBoard = () => {
         let res = '';
-        for (let r in game.board) {
-            for (let c in game.board[r])
-                res += game.board[r][c] + ' ';
+        for (let r of game.board) {
+            for (let c of r)
+                res += c + ' ';
             res = res.substr(0, res.length - 1) + '\n';
         }
         return res;

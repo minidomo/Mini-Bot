@@ -11,7 +11,7 @@ let C4 = function () {
             msg.channel.send('Not enough arguments.');
             return false;
         }
-        if (typeof commands.c4.subcommands[args[0]] === 'undefined') {
+        if (!(args[0] in commands.c4.subcommands)) {
             msg.channel.send(`Command \`${config.prefix}c4 ${args[0]}\` not found`);
             return false;
         }
