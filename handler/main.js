@@ -7,7 +7,6 @@ class MainHandler {
             `\tChannel: ${msg.channel.name}, ${msg.channel.id}\n` +
             `User: ${msg.author.tag}, ${msg.author.id}\n`;
         let first = true;
-        let a = new Map;
         msg.attachments.map((val, key) => {
             if (first) {
                 out += 'Attachments:\n';

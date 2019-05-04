@@ -69,7 +69,7 @@ let Connect4 = function () {
                 game.winner = 2;
         }
         printEmbed(msg, game);
-        if (!(winner in game))
+        if (!('winner' in game))
             removeGame(msg);
     };
 
