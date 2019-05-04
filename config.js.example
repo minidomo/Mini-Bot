@@ -14,7 +14,7 @@ config.activity = { name: null, options: { url: null, type: null } };
 // servers
 config.servers = {
     connect4: {},
-    music: {}
+    audio: {}
 };
 
 // features
@@ -49,14 +49,14 @@ config.commands = {
                 visible: true,
                 useable: true,
                 desc: 'Places your piece on the board.',
-                usage: 'p [coordinate]',
+                usage: 'p <coordinate>',
                 subcommands: null
             },
             'start': {
                 visible: true,
                 useable: true,
                 desc: 'Start a game with another player.',
-                usage: 'start [user1] [user2]',
+                usage: 'start <user1> <user2>',
                 subcommands: null
             }
         }
@@ -73,6 +73,57 @@ config.commands = {
         useable: true,
         desc: 'Shows information about the bot.',
         usage: 'info',
+        subcommands: null
+    },
+    'play': {
+        visible: true,
+        useable: true,
+        desc: 'Adds a song to the queue.',
+        usage: 'play <url>',
+        subcommands: null
+    },
+    'queue': {
+        visible: true,
+        useable: true,
+        desc: 'Shows the current audio tracks in the queue.',
+        usage: 'queue',
+        subcommands: null
+    },
+    'repeat': {
+        visible: true,
+        useable: true,
+        desc: 'Repeats either the current audio track or whole queue.',
+        usage: 'repeat <state>',
+        subcommands: {
+            'queue': {
+                visible: true,
+                useable: true,
+                desc: 'Repeats the current queue.',
+                usage: 'queue',
+                subcommands: null
+            },
+            'song': {
+                visible: true,
+                useable: true,
+                desc: 'Repeats the current audio track.',
+                usage: 'song',
+                subcommands: null
+            }
+        }
+    },
+    'skip': {
+        visible: true,
+        useable: true,
+        restrictable: false,
+        desc: 'Skips the current audio.',
+        usage: 'skip',
+        subcommands: null
+    },
+    'stop': {
+        visible: true,
+        useable: true,
+        desc: 'Stops the audio, and the bot leaves.',
+        usage: 'stop',
         subcommands: null
     }
 };
