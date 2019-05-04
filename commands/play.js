@@ -12,7 +12,7 @@ let Play = function () {
             return false;
         }
         if (!ytdl.validateURL(args[0])) {
-            msg.channel.send(`<${args[0]}> is not a valid youtube url`);
+            msg.channel.send(`<${args[0]}> is not a valid YouTube url.`);
             return false;
         }
         return true;
