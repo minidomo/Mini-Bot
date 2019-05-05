@@ -16,3 +16,11 @@ Made with [Node.js](https://nodejs.org/en/).
   - Renamed `music` server to `audio`.
   - Replaced `[]` parameters with `<>`.
   - Added support for audio commands.
+
+**Update May 5, 2019**
+- New `search` command
+  - Usage: `!!search <video title>`
+  - Use it to search for YouTube videos
+  - Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio).
+- `config.js.example`
+  - Added `search` command

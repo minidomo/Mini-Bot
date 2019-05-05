@@ -111,6 +111,13 @@ config.commands = {
             }
         }
     },
+    'search': {
+        visible: true,
+        useable: true,
+        desc: 'Searches for 5 YouTube videos.',
+        usage: 'search <video title>',
+        subcommands: null
+    },
     'skip': {
         visible: true,
         useable: true,
