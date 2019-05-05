@@ -10,23 +10,23 @@ const Emotes = {
 };
 
 // number & 1 === number % 2
-let Connect4 = function () {
-    this.canFF = msg => {
+class Connect4 {
+    static canFF(msg) {
         if (getGame(msg))
             return true;
         msg.channel.send('You are not playing a Connect 4 game.');
         return false;
-    };
+    }
 
-    this.ff = msg => {
+    static ff(msg) {
         let game = getGame(msg);
         let mentions = idToMentions(msg.author.id);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
         printEmbed(msg, game);
         removeGame(msg);
-    };
+    }
 
-    this.canPlace = (msg, col) => {
+    static canPlace(msg, col) {
         let game = getGame(msg);
         if (!game) {
             msg.channel.send('You are not playing a Connect 4 game.');
@@ -52,9 +52,9 @@ let Connect4 = function () {
                 return true;
         msg.channel.send('Invalid position.');
         return false;
-    };
+    }
 
-    this.place = (msg, args) => {
+    static place(msg, args) {
         let game = getGame(msg);
         let c = KeyMap[args[1].toLowerCase()];
         let r = 0;
@@ -71,9 +71,9 @@ let Connect4 = function () {
         printEmbed(msg, game);
         if (!('winner' in game))
             removeGame(msg);
-    };
+    }
 
-    this.canStart = (msg, user1, user2) => {
+    static canStart(msg, user1, user2) {
         if (!/^<@!?\d+>$/g.test(user1) || !/^<@!?\d+>$/g.test(user2)) {
             msg.channel.send('Both players must be users.');
             return false;
@@ -101,9 +101,9 @@ let Connect4 = function () {
             return false;
         }
         return true;
-    };
+    }
 
-    this.start = (msg, args) => {
+    static start(msg, args) {
         let game = {
             users: [],
             colors: [],
@@ -129,8 +129,8 @@ let Connect4 = function () {
         }
         servers[msg.guild.id].push(game);
         printEmbed(msg, game);
-    };
-};
+    }
+}
 
 let removeGame = msg => {
     let guild = msg.guild.id;
@@ -224,4 +224,4 @@ let printEmbed = (msg, game) => {
     msg.channel.send(embed);
 };
 
-module.exports = new Connect4;
+module.exports = Connect4;

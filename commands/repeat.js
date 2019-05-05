@@ -1,11 +1,11 @@
 'use strict';
 
-let config = require('../config');
+const config = require('../config');
 const commands = config.commands;
 const servers = config.servers.audio;
 
-let Repeat = function () {
-    this.pass = (msg, args) => {
+class Repeat {
+    static pass(msg, args) {
         if (!isGood(msg, args, 1))
             return false;
         if (!(args[0] in commands.repeat.subcommands)) {
@@ -13,9 +13,9 @@ let Repeat = function () {
             return false;
         }
         return true;
-    };
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         if (!servers[msg.guild.id])
             servers[msg.guild.id] = { queue: [], repeat: { song: false, queue: false } };
         if (args[0] === 'queue') {
@@ -27,8 +27,8 @@ let Repeat = function () {
             servers[msg.guild.id].repeat.queue = false;
             msg.channel.send(`Repeat song has been set to **${servers[msg.guild.id].repeat.song}**.`);
         }
-    };
-};
+    }
+}
 
 let isGood = (msg, args, lim) => {
     if (args.length === lim)
@@ -37,4 +37,4 @@ let isGood = (msg, args, lim) => {
     return false;
 };
 
-module.exports = new Repeat;
+module.exports = Repeat;

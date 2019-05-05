@@ -5,8 +5,8 @@ let config = require('../config');
 let commands = config.commands;
 let connect4 = require('../games/connect4');
 
-let C4 = function () {
-    this.pass = (msg, args) => {
+class C4 {
+    static pass(msg, args) {
         if (args.length === 0) {
             msg.channel.send('Not enough arguments.');
             return false;
@@ -58,12 +58,13 @@ let C4 = function () {
             run = connect4.start;
             return true;
         }
-    };
+        return false; // should never reach
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         run(msg, args);
-    };
-};
+    }
+}
 
 let help = function (msg) {
     let subcommands = commands.c4.subcommands;
@@ -82,4 +83,4 @@ let isGood = (msg, args, lim) => {
     return false;
 };
 
-module.exports = new C4;
+module.exports = C4;

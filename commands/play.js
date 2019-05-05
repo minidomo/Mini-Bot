@@ -3,8 +3,8 @@
 const servers = require('../config').servers.audio;
 const ytdl = require('ytdl-core');
 
-let Play = function () {
-    this.pass = (msg, args) => {
+class Play {
+    static pass(msg, args) {
         if (!isGood(msg, args, 1))
             return false;
         if (!msg.member.voiceChannel) {
@@ -16,9 +16,9 @@ let Play = function () {
             return false;
         }
         return true;
-    };
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         let guild = msg.guild.id;
         if (!servers[guild]) {
             servers[guild] = {};
@@ -30,7 +30,7 @@ let Play = function () {
         else
             addURL(msg, args[0]);
     };
-};
+}
 
 let isGood = (msg, args, lim) => {
     if (args.length === lim)
@@ -73,4 +73,4 @@ let play = msg => {
             play(msg);
     });
 };
-module.exports = new Play;
+module.exports = Play;

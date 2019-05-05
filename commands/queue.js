@@ -2,16 +2,16 @@
 
 const servers = require('../config').servers.audio;
 
-let Queue = function () {
-    this.pass = (msg, args) => {
+class Queue {
+    static pass(msg, args) {
         if (!servers[msg.guild.id] || servers[msg.guild.id].queue.length === 0) {
             msg.channel.send('There are currently no songs in the queue.');
             return false;
         }
         return true;
-    };
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         let res = '```apache\n';
         let x = 0;
         for (let track of servers[msg.guild.id].queue) {
@@ -24,7 +24,7 @@ let Queue = function () {
         }
         res += '```';
         msg.channel.send(res);
-    };
-};
+    }
+}
 
-module.exports = new Queue;
+module.exports = Queue;

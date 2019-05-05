@@ -2,8 +2,8 @@
 
 const servers = require('../config').servers.audio;
 
-let Skip = function () {
-    this.pass = (msg, args) => {
+class Skip {
+    static pass(msg, args) {
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
@@ -13,13 +13,13 @@ let Skip = function () {
             return false;
         }
         return true;
-    };
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         let queue = servers[msg.guild.id].queue;
         msg.channel.send(`Skipping **${queue[0].title}** by ${queue[0].author} \`[${queue[0].duration}]\``);
         servers[msg.guild.id].dispatcher.end();
-    };
-};
+    }
+}
 
-module.exports = new Skip;
+module.exports = Skip;

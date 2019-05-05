@@ -2,8 +2,8 @@
 
 const servers = require('../config').servers.audio;
 
-let Stop = function () {
-    this.pass = (msg, args) => {
+class Stop {
+    static pass(msg, args) {
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
@@ -13,15 +13,15 @@ let Stop = function () {
             return false;
         }
         return true;
-    };
+    }
 
-    this.run = (msg, args) => {
+    static run(msg, args) {
         msg.channel.send('Removing all songs from queue.');
         servers[msg.guild.id].repeat = { song: false, queue: false };
         servers[msg.guild.id].queue = [];
         servers[msg.guild.id].dispatcher.end();
         msg.guild.voiceConnection.disconnect();
-    };
-};
+    }
+}
 
-module.exports = new Stop;
+module.exports = Stop;
