@@ -4,7 +4,7 @@ const servers = require('../config').servers.audio;
 
 let Queue = function () {
     this.pass = (msg, args) => {
-        if (!servers[msg.guild.id] || servers[msg.guild.id].queue === 0) {
+        if (!servers[msg.guild.id] || servers[msg.guild.id].queue.length === 0) {
             msg.channel.send('There are currently no songs in the queue.');
             return false;
         }
