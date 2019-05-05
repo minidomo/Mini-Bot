@@ -12,7 +12,7 @@ class Queue {
     }
 
     static run(msg, args) {
-        let res = '```apache\n';
+        let res = '```nimrod\n';
         let x = 0;
         for (let track of servers[msg.guild.id].queue) {
             if (x === 0)
