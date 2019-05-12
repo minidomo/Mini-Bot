@@ -24,3 +24,9 @@ Made with [Node.js](https://nodejs.org/en/).
   - Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio).
 - `config.js.example`
   - Added `search` command
+
+**Update May 12, 2019**
+- Modified `search` command
+  - Primary method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method.
+- `config.js.example`
+  - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
