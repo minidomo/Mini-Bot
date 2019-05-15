@@ -30,3 +30,12 @@ Made with [Node.js](https://nodejs.org/en/).
   - Primary method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method.
 - `config.js.example`
   - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
+
+**Update May 15, 2019**
+- Added Tic Tac Toe game
+  - `!!ttt help` for a list of commands
+  - The code functions similar to Connect 4
+- `config.js.example`
+  - Added `ttt` command
+- `connect4.js`
+  - Fixed issue where the bot would crash when a game would end due to using an undefined variable

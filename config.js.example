@@ -137,6 +137,42 @@ config.commands = {
         desc: 'Stops the audio, and the bot leaves.',
         usage: 'stop',
         subcommands: null
+    },
+    'ttt': {
+        visible: true,
+        useable: true,
+        desc: `Tic Tac Toe base command. \`${config.prefix}ttt help\` for sub-commands.`,
+        usage: 'ttt',
+        subcommands: {
+            'ff': {
+                visible: true,
+                useable: true,
+                desc: 'Surrender your current game.',
+                usage: 'ff',
+                subcommands: null
+            },
+            'help': {
+                visible: true,
+                useable: true,
+                desc: `Shows the sub-commands of \`${config.prefix}ttt\`.`,
+                usage: 'help',
+                subcommands: null
+            },
+            'p': {
+                visible: true,
+                useable: true,
+                desc: 'Places your piece on the board.',
+                usage: 'p [coordinate]',
+                subcommands: null
+            },
+            'start': {
+                visible: true,
+                useable: true,
+                desc: 'Start a game with another player.',
+                usage: 'start [user1] [user2]',
+                subcommands: null
+            }
+        }
     }
 };
 

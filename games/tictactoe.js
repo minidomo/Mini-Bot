@@ -1,20 +1,20 @@
 'use strict';
 
-const servers = require('../config').servers.connect4;
-const MAXR = 7, MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
-const Piece = { RED: ':red_circle:', BLUE: ':large_blue_circle:', WHITE: ':white_circle:' };
-const KeyMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6 };
+const servers = require('../config').servers.tictactoe;
+const MAXR = 3, MAXC = 3, MAXTURNS = 9;
+const Piece = { X: ':x:', O: ':o:', DEFAULT: ':white_large_square:' };
+const ASCII_VALUE = { ONE: 49, LITTLE_A: 97 };
 const Emotes = {
     WIN: [':stuck_out_tongue:', ':joy:', ':stuck_out_tongue_winking_eye:', ':sunglasses:', ':first_place:', ':kissing_heart:'],
     LOSE: [':thinking:', ':disappointed:', ':tired_face:', ':rage:', ':sob:', ':second_place:', ':interrobang:']
 };
 
 // number & 1 === number % 2
-class Connect4 {
+class TicTacToe {
     static canFF(msg) {
         if (getGame(msg))
             return true;
-        msg.channel.send('You are not playing a Connect 4 game.');
+        msg.channel.send('You are not playing a Tick Tack Toe game.');
         return false;
     }
 
@@ -26,7 +26,7 @@ class Connect4 {
         removeGame(msg);
     }
 
-    static canPlace(msg, col) {
+    static canPlace(msg, loc) {
         let game = getGame(msg);
         if (!game) {
             msg.channel.send('You are not playing a Connect 4 game.');
@@ -41,35 +41,31 @@ class Connect4 {
             msg.channel.send('Is it not your turn.');
             return false;
         }
-        let letter = col[0].toLowerCase();
-        if (!/[abcdefg]/g.test(letter)) {
+        let location = loc.toLowerCase();
+        let [r, c] = getCoords(location);
+        if (typeof r === 'undefined' || typeof c === 'undefined') {
             msg.channel.send('Invalid position.');
             return false;
         }
-        let c = KeyMap[letter];
-        for (let r = 0; r < MAX_PLAYABLE_ROWS; r++)
-            if (game.board[r][c] == Piece.WHITE)
-                return true;
+        if (game.board[r][c] === Piece.DEFAULT)
+            return true;
         msg.channel.send('Invalid position.');
         return false;
     }
 
     static place(msg, args) {
         let game = getGame(msg);
-        let c = KeyMap[args[1].toLowerCase()];
-        let r = 0;
-        while (r < MAXR && game.board[r][c] === Piece.WHITE)
-            r++;
-        game.board[--r][c] = game.colors[game.turn & 1];
-        if (win(game, r, c)) {
+        let [r, c] = getCoords(args[1]);
+        game.board[r][c] = game.pieces[game.turn & 1];
+        if (win(game, r, c))
             game.winner = game.turn & 1;
-        } else {
+        else {
             game.turn++;
             if (game.turn === MAXTURNS)
                 game.winner = 2;
         }
         printEmbed(msg, game);
-        if (!('winner' in game))
+        if ('winner' in game)
             removeGame(msg);
     }
 
@@ -106,7 +102,7 @@ class Connect4 {
     static start(msg, args) {
         let game = {
             users: [],
-            colors: [],
+            pieces: [],
             board: [],
             turn: 0
         };
@@ -115,22 +111,30 @@ class Connect4 {
         else
             game.users.push(args[2], args[1]);
         if (Math.random() < .5)
-            game.colors.push(Piece.RED, Piece.BLUE);
+            game.pieces.push(Piece.X, Piece.O);
         else
-            game.colors.push(Piece.BLUE, Piece.RED);
+            game.pieces.push(Piece.O, Piece.X);
         for (let r = 0; r < MAXR; r++) {
             game.board.push([]);
-            if (r < MAX_PLAYABLE_ROWS)
-                for (let c = 0; c < MAXC; c++)
-                    game.board[r].push(Piece.WHITE);
-            else
-                for (let c of 'abcdefg')
-                    game.board[r].push(`:regional_indicator_${c}:`);
+            for (let c = 0; c < MAXC; c++)
+                game.board[r].push(Piece.DEFAULT);
         }
         servers[msg.guild.id].push(game);
         printEmbed(msg, game);
     }
 }
+
+let getCoords = loc => {
+    let r, c;
+    if (/^[a-c][1-3]$/g.test(loc)) {
+        r = loc.charCodeAt(1) - ASCII_VALUE.ONE;
+        c = loc.charCodeAt(0) - ASCII_VALUE.LITTLE_A;
+    } else if (/^[1-3][a-c]$/g.test(loc)) {
+        r = loc.charCodeAt(0) - ASCII_VALUE.ONE;
+        c = loc.charCodeAt(1) - ASCII_VALUE.LITTLE_A;
+    }
+    return [r, c];
+};
 
 let removeGame = msg => {
     let guild = msg.guild.id, x = 0;
@@ -151,7 +155,7 @@ let win = (game, r, c) => {
         let color = game.board[r][c];
         let row = r + dx;
         let col = c + dy;
-        while (row >= 0 && col >= 0 && row < MAX_PLAYABLE_ROWS && col < MAXC && count < 3 && game.board[row][col] === color) {
+        while (row >= 0 && col >= 0 && row < MAXR && col < MAXC && count < 3 && game.board[row][col] === color) {
             row += dx;
             col += dy;
             count++;
@@ -162,7 +166,7 @@ let win = (game, r, c) => {
     let dy = [-1, 1, 0, 0, -1, 1, -1, 1];
     for (let x = 0; x < dx.length; x += 2) {
         let c = count(dx[x], dy[x]) + count(dx[x + 1], dy[x + 1]);
-        if (c >= 3)
+        if (c >= 2)
             return true;
     }
     return false;
@@ -194,35 +198,39 @@ let getGame = msg => {
 
 let printEmbed = (msg, game) => {
     let getBoard = () => {
-        let res = '';
+        let res = '', i = 0;
         for (let r of game.board) {
+            res += i === 0 ? ':one:' : (i === 1 ? ':two:' : (i === 2 ? ':three:' : ''));
+            i++;
             for (let c of r)
-                res += c + ' ';
-            res = res.substr(0, res.length - 1) + '\n';
+                res += c;
+            res += '\n';
         }
+        res += ':arrow_upper_right::regional_indicator_a::regional_indicator_b::regional_indicator_c:\n';
         return res;
-    };
+    }
     let lowerDesc = () => {
         let res = '\n';
-        if (typeof game.winner !== 'undefined') {
+        if ('winner' in game) {
             if (game.winner === 2)
-                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.colors[0]}
-                    \n${game.users[1]} ${game.colors[1]}`;
+                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.pieces[0]}
+                    \n${game.users[1]} ${game.pieces[1]}`;
             else
-                res += `${game.users[game.winner]} ${game.colors[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
-                    \n\n${game.users[game.winner + 1 & 1]} ${game.colors[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
-        } else if (typeof game.forfeit !== 'undefined') {
-            res += `${game.users[game.forfeit]} ${game.colors[game.forfeit]} surrenders! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
-                \n\n${game.users[game.forfeit + 1 & 1]} ${game.colors[game.forfeit + 1 & 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
-        } else
-            res += `${game.users[0]} ${game.colors[0]} vs ${game.users[1]} ${game.colors[1]}
+                res += `${game.users[game.winner]} ${game.pieces[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
+                    \n\n${game.users[game.winner + 1 & 1]} ${game.pieces[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
+        } else if ('forfeit' in game) {
+            res += `${game.users[game.forfeit]} ${game.pieces[game.forfeit]} surrenders! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
+                \n\n${game.users[game.forfeit + 1 & 1]} ${game.pieces[game.forfeit + 1 & 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
+        } else {
+            res += `${game.users[0]} ${game.pieces[0]} vs ${game.users[1]} ${game.pieces[1]}
                 \n\n${game.users[game.turn & 1]}'s Move`;
+        }
         return res;
-    };
+    }
     let desc = getBoard() + lowerDesc();
-    let embed = new (require('discord.js')).RichEmbed({ description: desc, title: 'Connect 4' });
+    let embed = new (require('discord.js')).RichEmbed({ description: desc, title: 'TicTacToe' });
     embed.setColor('AQUA');
     msg.channel.send(embed);
 };
 
-module.exports = Connect4;
+module.exports = TicTacToe;
