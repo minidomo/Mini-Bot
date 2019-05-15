@@ -19,7 +19,8 @@ config.api_keys = {
 // servers
 config.servers = {
     connect4: {},
-    audio: {}
+    audio: {},
+    tictactoe: {}
 };
 
 // features
