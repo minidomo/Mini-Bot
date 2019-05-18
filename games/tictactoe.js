@@ -3,7 +3,7 @@
 const servers = require('../config').servers.tictactoe;
 const MAXR = 3, MAXC = 3, MAXTURNS = 9;
 const Piece = { X: ':x:', O: ':o:', DEFAULT: ':white_large_square:' };
-const ASCII_VALUE = { ONE: 49, LITTLE_A: 97 };
+const ASCII_VALUE = { ONE: 49, LOWERCASE_A: 97 };
 const Emotes = {
     WIN: [':stuck_out_tongue:', ':joy:', ':stuck_out_tongue_winking_eye:', ':sunglasses:', ':first_place:', ':kissing_heart:'],
     LOSE: [':thinking:', ':disappointed:', ':tired_face:', ':rage:', ':sob:', ':second_place:', ':interrobang:']
@@ -29,7 +29,7 @@ class TicTacToe {
     static canPlace(msg, loc) {
         let game = getGame(msg);
         if (!game) {
-            msg.channel.send('You are not playing a Connect 4 game.');
+            msg.channel.send('You are not playing a Tick Tack Toe game.');
             return false;
         }
         let isTurn = () => {
@@ -128,10 +128,10 @@ let getCoords = loc => {
     let r, c;
     if (/^[a-c][1-3]$/g.test(loc)) {
         r = loc.charCodeAt(1) - ASCII_VALUE.ONE;
-        c = loc.charCodeAt(0) - ASCII_VALUE.LITTLE_A;
+        c = loc.charCodeAt(0) - ASCII_VALUE.LOWERCASE_A;
     } else if (/^[1-3][a-c]$/g.test(loc)) {
         r = loc.charCodeAt(0) - ASCII_VALUE.ONE;
-        c = loc.charCodeAt(1) - ASCII_VALUE.LITTLE_A;
+        c = loc.charCodeAt(1) - ASCII_VALUE.LOWERCASE_A;
     }
     return [r, c];
 };
@@ -188,10 +188,10 @@ let getGame = msg => {
     if (!servers[guild])
         return undefined;
     let mentions = idToMentions(msg.author.id);
-    for (let server of servers[guild]) {
+    for (let game of servers[guild]) {
         for (let a = 0; a < 2; a++)
-            if (server.users[a] === mentions[0] || server.users[a] === mentions[1])
-                return server;
+            if (game.users[a] === mentions[0] || game.users[a] === mentions[1])
+                return game;
     }
     return undefined;
 };

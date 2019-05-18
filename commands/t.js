@@ -11,15 +11,15 @@ class TicTacToe {
             msg.channel.send('Not enough arguments.');
             return false;
         }
-        if (!(args[0] in commands.ttt.subcommands)) {
-            msg.channel.send(`Command \`${config.prefix}ttt ${args[0]}\` not found`);
+        if (!(args[0] in commands.t.subcommands)) {
+            msg.channel.send(`Command \`${config.prefix}t ${args[0]}\` not found`);
             return false;
         }
         if (args[0] === 'help') {
             if (!isGood(msg, args, 1))
                 return false;
-            if (!commands.ttt.subcommands.help.useable) {
-                msg.channel.send(`Command \`${config.prefix}ttt ${args[0]} is not useable right now.`);
+            if (!commands.t.subcommands.help.useable) {
+                msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
             }
             run = help;
@@ -27,8 +27,8 @@ class TicTacToe {
         } else if (args[0] === 'ff') {
             if (!isGood(msg, args, 1))
                 return false;
-            if (!commands.ttt.subcommands.ff.useable) {
-                msg.channel.send(`Command \`${config.prefix}ttt ${args[0]} is not useable right now.`);
+            if (!commands.t.subcommands.ff.useable) {
+                msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
             }
             if (!tictactoe.canFF(msg))
@@ -38,8 +38,8 @@ class TicTacToe {
         } else if (args[0] === 'p') {
             if (!isGood(msg, args, 2))
                 return false;
-            if (!commands.ttt.subcommands.p.useable) {
-                msg.channel.send(`Command \`${config.prefix}ttt ${args[0]} is not useable right now.`);
+            if (!commands.t.subcommands.p.useable) {
+                msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
             }
             if (!tictactoe.canPlace(msg, args[1]))
@@ -49,8 +49,8 @@ class TicTacToe {
         } else if (args[0] === 'start') {
             if (!isGood(msg, args, 3))
                 return false;
-            if (!commands.ttt.subcommands.start.useable) {
-                msg.channel.send(`Command \`${config.prefix}ttt ${args[0]} is not useable right now.`);
+            if (!commands.t.subcommands.start.useable) {
+                msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
             }
             if (!tictactoe.canStart(msg, args[1], args[2]))
@@ -67,11 +67,11 @@ class TicTacToe {
 }
 
 let help = function (msg) {
-    let subcommands = commands.ttt.subcommands;
+    let subcommands = commands.t.subcommands;
     let func = prop => subcommands[prop].visible ? `\` ${subcommands[prop].usage}\` ${subcommands[prop].desc}\n` : '';
     let fulldesc = '';
     Object.keys(subcommands).forEach(prop => fulldesc += func(prop));
-    let embed = new (require('discord.js')).RichEmbed({ description: fulldesc, title: `Sub-commands | Prefix: ${config.prefix}ttt` });
+    let embed = new (require('discord.js')).RichEmbed({ description: fulldesc, title: `Sub-commands | Prefix: ${config.prefix}t` });
     embed.setColor('RED');
     msg.channel.send(embed);
 };

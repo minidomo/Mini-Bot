@@ -39,3 +39,18 @@ Made with [Node.js](https://nodejs.org/en/).
   - Added `ttt` command
 - `connect4.js`
   - Fixed issue where the bot would crash when a game would end due to using an undefined variable
+
+**Update May 17, 2019**
+- Added `remove` command
+  - Usage: `!!remove <audio number>` (0 for the current audio)
+  - Removes the specified audio from the queue
+- `connect4.js`
+  - Fixed issue where the game would be removed from the server after the first move
+  - Refactored in `getGame(msg)` method
+- `tictactoe.js`
+  - Refactored some variables
+- `ttt.js` changed to `t.js`
+  - Refacted 
+- `config.js.example`
+  - Added `remove` command
+  - Adjusted change from `ttt` to `t`

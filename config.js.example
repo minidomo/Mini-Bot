@@ -95,6 +95,14 @@ config.commands = {
         usage: 'queue',
         subcommands: null
     },
+    'remove': {
+        visible: true,
+        useable: true,
+        restrictable: false,
+        desc: 'Remove an audio from the queue.',
+        usage: 'remove <audio number>',
+        subcommands: null
+    },
     'repeat': {
         visible: true,
         useable: true,
@@ -139,11 +147,11 @@ config.commands = {
         usage: 'stop',
         subcommands: null
     },
-    'ttt': {
+    't': {
         visible: true,
         useable: true,
-        desc: `Tic Tac Toe base command. \`${config.prefix}ttt help\` for sub-commands.`,
-        usage: 'ttt',
+        desc: `Tic Tac Toe base command. \`${config.prefix}t help\` for sub-commands.`,
+        usage: 't',
         subcommands: {
             'ff': {
                 visible: true,
@@ -155,7 +163,7 @@ config.commands = {
             'help': {
                 visible: true,
                 useable: true,
-                desc: `Shows the sub-commands of \`${config.prefix}ttt\`.`,
+                desc: `Shows the sub-commands of \`${config.prefix}t\`.`,
                 usage: 'help',
                 subcommands: null
             },

@@ -56,7 +56,7 @@ class Connect4 {
 
     static place(msg, args) {
         let game = getGame(msg);
-        let c = KeyMap[args[1].toLowerCase()];
+        let c = KeyMap[args[1][0].toLowerCase()];
         let r = 0;
         while (r < MAXR && game.board[r][c] === Piece.WHITE)
             r++;
@@ -69,7 +69,7 @@ class Connect4 {
                 game.winner = 2;
         }
         printEmbed(msg, game);
-        if (!('winner' in game))
+        if ('winner' in game)
             removeGame(msg);
     }
 
@@ -184,10 +184,10 @@ let getGame = msg => {
     if (!servers[guild])
         return undefined;
     let mentions = idToMentions(msg.author.id);
-    for (let server of servers[guild]) {
+    for (let game of servers[guild]) {
         for (let a = 0; a < 2; a++)
-            if (server.users[a] === mentions[0] || server.users[a] === mentions[1])
-                return server;
+            if (game.users[a] === mentions[0] || game.users[a] === mentions[1])
+                return game;
     }
     return undefined;
 };
