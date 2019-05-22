@@ -54,3 +54,15 @@ Made with [Node.js](https://nodejs.org/en/).
 - `config.js.example`
   - Added `remove` command
   - Adjusted change from `ttt` to `t`
+
+**Update May 22, 2019**
+- Chat logs are now also recorded in `.log` files
+  - Added the folder, `chatlogs`
+  - Now support logging edited messages
+- `index.js`
+  - Added event for edited messages
+  - Created a `WriteStream`
+- `main.js`
+  - Added support for the `WriteStream` and edited messages
+- `.gitignore`
+  - Ignored `.log` files in the folder, `chatlogs`.
