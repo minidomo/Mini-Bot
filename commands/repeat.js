@@ -3,11 +3,15 @@
 const config = require('../config');
 const commands = config.commands;
 const servers = config.servers.audio;
+const CommandsUtil = require('../util/commands');
 
 class Repeat {
     static pass(msg, args) {
-        if (!isGood(msg, args, 1))
+        let argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
+        if (!argCount.result) {
+            msg.channel.send(argCount.message);
             return false;
+        }
         if (!(args[0] in commands.repeat.subcommands)) {
             msg.channel.send('`<state>` must be either `repeat` or `queue`.');
             return false;
@@ -29,12 +33,5 @@ class Repeat {
         }
     }
 }
-
-let isGood = (msg, args, lim) => {
-    if (args.length === lim)
-        return true;
-    msg.channel.send(args.length > lim ? 'Too many arguments.' : 'Not enough arguments.');
-    return false;
-};
 
 module.exports = Repeat;

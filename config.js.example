@@ -98,7 +98,6 @@ config.commands = {
     'remove': {
         visible: true,
         useable: true,
-        restrictable: false,
         desc: 'Remove an audio from the queue.',
         usage: 'remove <audio number>',
         subcommands: null
@@ -106,7 +105,7 @@ config.commands = {
     'repeat': {
         visible: true,
         useable: true,
-        desc: 'Repeats either the current audio track or whole queue.',
+        desc: 'Turn repeat on/off for either a song or the whole queue.',
         usage: 'repeat <state>',
         subcommands: {
             'queue': {
@@ -125,6 +124,13 @@ config.commands = {
             }
         }
     },
+    'rps': {
+        visible: true,
+        useable: true,
+        desc: 'An RNG Rock Paper Scissors game.',
+        usage: 'rps <user1> <user2>',
+        subcommands: null
+    },
     'search': {
         visible: true,
         useable: true,
@@ -135,7 +141,6 @@ config.commands = {
     'skip': {
         visible: true,
         useable: true,
-        restrictable: false,
         desc: 'Skips the current audio.',
         usage: 'skip',
         subcommands: null

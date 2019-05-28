@@ -3,7 +3,7 @@ Discord bot for my friend's server.
 Made with [Node.js](https://nodejs.org/en/).  
 
 **Update April 21, 2019**
-- Refractored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
+- Refactored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
 
 **Update April 22, 2019** 
 - See [config.js.example](https://github.com/MiniDomo/Mini-Bot/blob/master/config.js.example) to understand how `config.js` should be structured.  
@@ -66,3 +66,13 @@ Made with [Node.js](https://nodejs.org/en/).
   - Added support for the `WriteStream` and edited messages
 - `.gitignore`
   - Ignored `.log` files in the folder, `chatlogs`.
+
+**Update  May 28, 2019**
+- Added `rps` (RNG Rock Paper Scissors) game
+  - Usage: `!!rps <user1> <user2>`
+- Added `util` folder
+  - Created to group common methods that I've used in multiple files
+- `games` and `commands` refactored code for the creation of `util` and made assigned variables at the top of files to `const`
+- Updated `config.js.example`
+  - Removed unnecessary `restrictable` properties in `commands`
+  - Added `rps` 

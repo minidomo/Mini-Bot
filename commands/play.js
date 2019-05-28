@@ -2,11 +2,15 @@
 
 const servers = require('../config').servers.audio;
 const ytdl = require('ytdl-core');
+const CommandsUtil = require('../util/commands');
 
 class Play {
     static pass(msg, args) {
-        if (!isGood(msg, args, 1))
+        let argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
+        if (!argCount.result) {
+            msg.channel.send(argCount.message);
             return false;
+        }
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
@@ -31,13 +35,6 @@ class Play {
             addURL(msg, args[0]);
     };
 }
-
-let isGood = (msg, args, lim) => {
-    if (args.length === lim)
-        return true;
-    msg.channel.send(args.length > lim ? 'Too many arguments.' : 'Not enough arguments.');
-    return false;
-};
 let secToHHMMSS = sec => new Date(1000 * sec).toISOString().substr(11, 8);
 let addURL = (msg, URL) => {
     ytdl.getBasicInfo(URL, (err, info) => {

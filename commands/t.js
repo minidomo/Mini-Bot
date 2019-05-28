@@ -1,9 +1,10 @@
 'use strict';
 
 let run;
-let config = require('../config');
-let commands = config.commands;
-let tictactoe = require('../games/tictactoe');
+const config = require('../config');
+const commands = config.commands;
+const tictactoe = require('../games/tictactoe');
+const CommandsUtil = require('../util/commands');
 
 class TicTacToe {
     static pass(msg, args) {
@@ -15,9 +16,13 @@ class TicTacToe {
             msg.channel.send(`Command \`${config.prefix}t ${args[0]}\` not found`);
             return false;
         }
+        let argCount;
         if (args[0] === 'help') {
-            if (!isGood(msg, args, 1))
+            argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
+            if (!argCount.result) {
+                msg.channel.send(argCount.message);
                 return false;
+            }
             if (!commands.t.subcommands.help.useable) {
                 msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
@@ -25,8 +30,11 @@ class TicTacToe {
             run = help;
             return true;
         } else if (args[0] === 'ff') {
-            if (!isGood(msg, args, 1))
+            argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
+            if (!argCount.result) {
+                msg.channel.send(argCount.message);
                 return false;
+            }
             if (!commands.t.subcommands.ff.useable) {
                 msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
@@ -36,8 +44,11 @@ class TicTacToe {
             run = tictactoe.ff;
             return true;
         } else if (args[0] === 'p') {
-            if (!isGood(msg, args, 2))
+            argCount = CommandsUtil.checkArgumentCount(args, 2, 'Not enough arguments.', 'Too many arguments.');
+            if (!argCount.result) {
+                msg.channel.send(argCount.message);
                 return false;
+            }
             if (!commands.t.subcommands.p.useable) {
                 msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
@@ -47,8 +58,11 @@ class TicTacToe {
             run = tictactoe.place;
             return true;
         } else if (args[0] === 'start') {
-            if (!isGood(msg, args, 3))
+            argCount = CommandsUtil.checkArgumentCount(args, 3, 'Not enough arguments.', 'Too many arguments.');
+            if (!argCount.result) {
+                msg.channel.send(argCount.message);
                 return false;
+            }
             if (!commands.t.subcommands.start.useable) {
                 msg.channel.send(`Command \`${config.prefix}t ${args[0]} is not useable right now.`);
                 return false;
@@ -58,7 +72,6 @@ class TicTacToe {
             run = tictactoe.start;
             return true;
         }
-        return false; // should never reach
     }
 
     static run(msg, args) {
@@ -74,13 +87,6 @@ let help = function (msg) {
     let embed = new (require('discord.js')).RichEmbed({ description: fulldesc, title: `Sub-commands | Prefix: ${config.prefix}t` });
     embed.setColor('RED');
     msg.channel.send(embed);
-};
-
-let isGood = (msg, args, lim) => {
-    if (args.length === lim)
-        return true;
-    msg.channel.send(args.length > lim ? 'Too many arguments.' : 'Not enough arguments.');
-    return false;
 };
 
 module.exports = TicTacToe;

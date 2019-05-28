@@ -1,6 +1,7 @@
 'use strict';
 
 const servers = require('../config').servers.connect4;
+const UserUtil = require('../util/user');
 const MAXR = 7, MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
 const Piece = { RED: ':red_circle:', BLUE: ':large_blue_circle:', WHITE: ':white_circle:' };
 const KeyMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6 };
@@ -20,7 +21,7 @@ class Connect4 {
 
     static ff(msg) {
         let game = getGame(msg);
-        let mentions = idToMentions(msg.author.id);
+        let mentions = UserUtil.idToMentions(msg.author.id);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
         printEmbed(msg, game);
         removeGame(msg);
@@ -33,7 +34,7 @@ class Connect4 {
             return false;
         }
         let isTurn = () => {
-            let mentions = idToMentions(msg.author.id);
+            let mentions = UserUtil.idToMentions(msg.author.id);
             let cur = game.users[game.turn & 1]
             return cur === mentions[0] || cur === mentions[1];
         };
@@ -42,7 +43,7 @@ class Connect4 {
             return false;
         }
         let letter = col[0].toLowerCase();
-        if (!/[abcdefg]/g.test(letter)) {
+        if (!/^[abcdefg]$/g.test(letter)) {
             msg.channel.send('Invalid position.');
             return false;
         }
@@ -56,7 +57,7 @@ class Connect4 {
 
     static place(msg, args) {
         let game = getGame(msg);
-        let c = KeyMap[args[1][0].toLowerCase()];
+        let c = KeyMap[args[1].toLowerCase()];
         let r = 0;
         while (r < MAXR && game.board[r][c] === Piece.WHITE)
             r++;
@@ -74,14 +75,14 @@ class Connect4 {
     }
 
     static canStart(msg, user1, user2) {
-        if (!/^<@!?\d+>$/g.test(user1) || !/^<@!?\d+>$/g.test(user2)) {
+        if (!UserUtil.mentionIsAUser(user1) || !UserUtil.mentionIsAUser(user2)) {
             msg.channel.send('Both players must be users.');
             return false;
         }
         let mentionToID = mention => mention.replace(/^<@!?/g, '').replace(/>$/g, '');
-        let u1 = mentionToID(user1);
-        let u2 = mentionToID(user2);
-        if (msg.guild.members.get(u1).user.bot || msg.guild.members.get(u2).user.bot) {
+        let u1 = UserUtil.mentionToID(user1);
+        let u2 = UserUtil.mentionToID(user2);
+        if (UserUtil.isBot(msg.guild.members, u1) || UserUtil.isBot(msg.guild.members, u2)) {
             msg.channel.send('Bots are not allowed to play.');
             return false;
         }
@@ -134,7 +135,7 @@ class Connect4 {
 
 let removeGame = msg => {
     let guild = msg.guild.id, x = 0;
-    let mentions = idToMentions(msg.author.id);
+    let mentions = UserUtil.idToMentions(msg.author.id);
     for (let server of servers[guild]) {
         for (let a = 0; a < 2; a++)
             if (server.users[a] === mentions[0] || server.users[a] === mentions[1]) {
@@ -168,8 +169,6 @@ let win = (game, r, c) => {
     return false;
 };
 
-let idToMentions = id => [`<@${id}>`, `<@!${id}>`];
-
 let getGameByMention = (guild, mention) => {
     if (!servers[guild])
         return undefined;
@@ -183,7 +182,7 @@ let getGame = msg => {
     let guild = msg.guild.id;
     if (!servers[guild])
         return undefined;
-    let mentions = idToMentions(msg.author.id);
+    let mentions = UserUtil.idToMentions(msg.author.id);
     for (let game of servers[guild]) {
         for (let a = 0; a < 2; a++)
             if (game.users[a] === mentions[0] || game.users[a] === mentions[1])

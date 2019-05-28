@@ -1,6 +1,7 @@
 'use strict';
 
 const servers = require('../config').servers.audio;
+const CommandsUtil = require('../util/commands');
 
 class Remove {
     static pass(msg, args) {
@@ -12,8 +13,11 @@ class Remove {
             msg.channel.send('There are currently no songs in the queue.');
             return false;
         }
-        if (!isGood(msg, args, 1))
+        let argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
+        if (!argCount.result) {
+            msg.channel.send(argCount.message);
             return false;
+        }
         let queue = servers[msg.guild.id].queue;
         if (/^\d+$/g.test(args[0])) {
             let x = parseInt(args[0]);
@@ -31,12 +35,5 @@ class Remove {
         msg.channel.send(`Removed **${vid.title}** by ${vid.author} from queue.`);
     }
 }
-
-let isGood = (msg, args, lim) => {
-    if (args.length === lim)
-        return true;
-    msg.channel.send(args.length > lim ? 'Too many arguments.' : 'Not enough arguments.');
-    return false;
-};
 
 module.exports = Remove;
