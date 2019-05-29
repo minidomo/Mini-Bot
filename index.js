@@ -5,8 +5,10 @@ const client = new Discord.Client();
 const fs = require('fs');
 
 const config = require('./config');
-const mainHandler = require('./handler/main');
 const commandHandler = require('./handler/command');
+const main = require('./handler/main');
+const mainHandler = main.handler;
+const LOG_TYPE = main.type;
 
 const chatlog = fs.createWriteStream(`./chatlogs/${new Date().toString().replace(/[:]/g, '-')}.log`);
 
@@ -17,7 +19,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    mainHandler.log(msg, chatlog);
+    mainHandler.log(msg, chatlog, LOG_TYPE.NEW);
     if (!msg.author.bot)
         if (msg.content.startsWith(config.prefix)) {
             let obj = commandHandler.getArguments(msg, config.prefix);
@@ -28,7 +30,11 @@ client.on('message', msg => {
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    mainHandler.log(newMessage, chatlog, true);
+    mainHandler.log(newMessage, chatlog, LOG_TYPE.EDITED);
+});
+
+client.on('messageDelete', deletedMessage => {
+    mainHandler.log(deletedMessage, chatlog, LOG_TYPE.DELETED);
 });
 
 client.login(config.token);

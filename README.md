@@ -81,3 +81,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - `play` can now receive and play audio given a video title
   - `play.js` passes a callback function to `search.js`
 - Fixed issue with `tictactoe.js` where uppercase letters would be passed in `canPlace()` but not in `place()`
+- Logging
+  - Now logs deleted messages and embed titles
+  - Created enums for the type of data being logged
+  - Affects `main.js` and `index.js`
