@@ -8,7 +8,6 @@ const config = require('../config');
 const opts = {
     maxResults: 5,
     type: 'video',
-    order: 'viewCount',
     safeSearch: 'none',
     key: config.api_keys.youtube
 }
@@ -22,28 +21,34 @@ class Search {
         return true;
     }
 
-    static run(msg, args) {
+    static run(msg, args, callback = undefined) {
+        let withCallback = typeof callback === 'function';
+        opts.maxResults = withCallback ? 1 : 5;
         if (opts.key) {
             let title = args.join(' ');
             search(title, opts, (err, results) => {
                 if (err)
-                    alternative(msg, args);
+                    alternative(msg, args, withCallback ? callback : undefined);
                 else {
-                    let res = '', i = 1;
-                    for (let vid of results)
-                        res += `\`${i++}\` *${vid.title}* by ${vid.channelTitle}\n\t<${vid.link}>\n\n`;
-                    if (res === '')
-                        alternative(msg, args);
-                    else
-                        msg.channel.send(res);
+                    if (withCallback)
+                        callback(msg, [results[0].link]);
+                    else {
+                        let res = '', i = 1;
+                        for (let vid of results)
+                            res += `\`${i++}\` *${vid.title}* by ${vid.channelTitle}\n\t<${vid.link}>\n\n`;
+                        if (res === '')
+                            alternative(msg, args, withCallback ? callback : undefined);
+                        else
+                            msg.channel.send(res);
+                    }
                 }
             });
         } else
-            alternative(msg, args);
+            alternative(msg, args, withCallback ? callback : undefined);
     }
 }
 
-let alternative = (msg, args) => {
+let alternative = (msg, args, callback = undefined) => {
     let title = args.join('+');
     axios.get(url + title).then(response => {
         let data = [];
@@ -62,14 +67,6 @@ let alternative = (msg, args) => {
                 obj.author = elem.children[1].firstChild.firstChild.data;
                 if (!obj.author)
                     continue;
-                obj.duration = elem.firstChild.children[1].firstChild.data;
-                if (!obj.duration)
-                    continue;
-                obj.duration = obj.duration.substring(13, obj.duration.length - 1);
-                obj.views = elem.firstChild.firstChild.firstChild.attribs['aria-label'];
-                if (!obj.views)
-                    continue;
-                obj.views = obj.views.substr(obj.views.lastIndexOf(' ', obj.views.length - 7) + 1);
                 data.push(obj);
                 i++;
             } catch (err) {
@@ -79,10 +76,14 @@ let alternative = (msg, args) => {
 
         let res;
         if (data.length > 0) {
-            let i = 1;
-            res = '';
-            for (let elem of data)
-                res += `\`${i++}\` *${elem.title}* by ${elem.author} \`${elem.views} [${elem.duration}]\`\n\t<${elem.url}>\n\n`;
+            if (typeof callback === 'function')
+                callback(msg, [data[0].url]);
+            else {
+                let i = 1;
+                res = '';
+                for (let elem of data)
+                    res += `\`${i++}\` *${elem.title}* by ${elem.author}\n\t<${elem.url}>\n\n`;
+            }
         } else {
             res = 'No videos were found. ;-;';
         }

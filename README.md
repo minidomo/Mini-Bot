@@ -67,7 +67,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - `.gitignore`
   - Ignored `.log` files in the folder, `chatlogs`.
 
-**Update  May 28, 2019**
+**Update May 28, 2019**
 - Added `rps` (RNG Rock Paper Scissors) game
   - Usage: `!!rps <user1> <user2>`
 - Added `util` folder
@@ -75,4 +75,9 @@ Made with [Node.js](https://nodejs.org/en/).
 - `games` and `commands` refactored code for the creation of `util` and made assigned variables at the top of files to `const`
 - Updated `config.js.example`
   - Removed unnecessary `restrictable` properties in `commands`
-  - Added `rps` 
+  - Added `rps`
+
+**Update May 29, 2019**
+- `play` can now receive and play audio given a video title
+  - `play.js` passes a callback function to `search.js`
+- Fixed issue with `tictactoe.js` where uppercase letters would be passed in `canPlace()` but not in `place()`

@@ -3,36 +3,32 @@
 const servers = require('../config').servers.audio;
 const ytdl = require('ytdl-core');
 const CommandsUtil = require('../util/commands');
+const Search = require('./search');
 
 class Play {
     static pass(msg, args) {
-        let argCount = CommandsUtil.checkArgumentCount(args, 1, 'Not enough arguments.', 'Too many arguments.');
-        if (!argCount.result) {
-            msg.channel.send(argCount.message);
-            return false;
-        }
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
         }
-        if (!ytdl.validateURL(args[0])) {
-            msg.channel.send(`<${args[0]}> is not a valid YouTube url.`);
-            return false;
-        }
-        return true;
+        return Search.pass(msg, args);
     }
 
     static run(msg, args) {
-        let guild = msg.guild.id;
-        if (!servers[guild]) {
-            servers[guild] = {};
-            servers[guild].queue = [];
-            servers[guild].repeat = { song: false, queue: false };
+        if (!ytdl.validateURL(args[0])) {
+            Search.run(msg, args, this.run);
+        } else {
+            let guild = msg.guild.id;
+            if (!servers[guild]) {
+                servers[guild] = {};
+                servers[guild].queue = [];
+                servers[guild].repeat = { song: false, queue: false };
+            }
+            if (!msg.guild.voiceConnection)
+                msg.member.voiceChannel.join().then(connection => addURL(msg, args[0]));
+            else
+                addURL(msg, args[0]);
         }
-        if (!msg.guild.voiceConnection)
-            msg.member.voiceChannel.join().then(connection => addURL(msg, args[0]));
-        else
-            addURL(msg, args[0]);
     };
 }
 let secToHHMMSS = sec => new Date(1000 * sec).toISOString().substr(11, 8);

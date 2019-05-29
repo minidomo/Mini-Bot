@@ -42,8 +42,7 @@ class TicTacToe {
             msg.channel.send('Is it not your turn.');
             return false;
         }
-        let location = loc.toLowerCase();
-        let [r, c] = getCoords(location);
+        let [r, c] = getCoords(loc);
         if (typeof r === 'undefined' || typeof c === 'undefined') {
             msg.channel.send('Invalid position.');
             return false;
@@ -125,6 +124,7 @@ class TicTacToe {
 }
 
 let getCoords = loc => {
+    loc = loc.toLowerCase();
     let r, c;
     if (/^[a-c][1-3]$/g.test(loc)) {
         r = loc.charCodeAt(1) - ASCII_VALUE.ONE;
