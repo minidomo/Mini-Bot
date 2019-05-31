@@ -21,7 +21,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - New `search` command
   - Usage: `!!search <video title>`
   - Use it to search for YouTube videos
-  - ~~Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio)~~ [Removed due to potential security vulnerability](https://github.com/MiniDomo/Mini-Bot#update-may-12-2019)
+  - ~~Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio)~~ [Removed due to potential security vulnerability](https://github.com/MiniDomo/Mini-Bot#update-may-31-2019)
 - `config.js.example`
   - Added `search` command
 
