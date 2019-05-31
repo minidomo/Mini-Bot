@@ -5,10 +5,10 @@ Made with [Node.js](https://nodejs.org/en/).
 #### Update April 21, 2019
 - Refactored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
 
-#### Update April 22, 2019 
+#### Update April 22, 2019
 - See [config.js.example](https://github.com/MiniDomo/Mini-Bot/blob/master/config.js.example) to understand how `config.js` should be structured.  
 
-#### Update May 4, 2019 
+#### Update May 4, 2019
 - Audio commands added: `play`, `queue`, `repeat`, `skip`, and `stop`
   - Uses [ytdl-core](https://www.npmjs.com/package/ytdl-core) and [opusscript](https://www.npmjs.com/package/opusscript).
   - Audio commands require [FFmpeg](https://ffmpeg.org/) to be installed on host's computer.
@@ -21,13 +21,13 @@ Made with [Node.js](https://nodejs.org/en/).
 - New `search` command
   - Usage: `!!search <video title>`
   - Use it to search for YouTube videos
-  - ~~Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio)~~ [Removed due to potential security vulnerability](https://github.com/MiniDomo/Mini-Bot#update-may-31-2019)
+  - Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio).
 - `config.js.example`
   - Added `search` command
 
 #### Update May 12, 2019
 - Modified `search` command
-  - Method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). ~~This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method~~ [Changed](https://github.com/MiniDomo/Mini-Bot#update-may-31-2019)
+  - Primary method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method.
 - `config.js.example`
   - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
 
@@ -87,6 +87,4 @@ Made with [Node.js](https://nodejs.org/en/).
   - Affects `main.js` and `index.js`
 
 #### Update May 31, 2019
-- Removed dependencies: axios and cheerio due to potential security vulnerability
-- Utilizing `search` and `play` (when searching via video title) now requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials)
-  - If no key is provided `search` and using `play` with a video link will not work
+- Updated [axios](https://www.npmjs.com/package/axios) to 0.19.0 to prevent potential security vulnerability
