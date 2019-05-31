@@ -21,13 +21,13 @@ Made with [Node.js](https://nodejs.org/en/).
 - New `search` command
   - Usage: `!!search <video title>`
   - Use it to search for YouTube videos
-  - ~~Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio)~~ Removed due to potential security vulnerability
+  - ~~Uses [axios](https://www.npmjs.com/package/axios) and [cheerio](https://www.npmjs.com/package/cheerio)~~ [Removed due to potential security vulnerability](https://github.com/MiniDomo/Mini-Bot#update-may-12-2019)
 - `config.js.example`
   - Added `search` command
 
 #### Update May 12, 2019
 - Modified `search` command
-  - Method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). ~~This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method~~ Changed see May 31, 2019
+  - Method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). ~~This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method~~ [Changed](https://github.com/MiniDomo/Mini-Bot#update-may-31-2019)
 - `config.js.example`
   - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
 
