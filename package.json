@@ -8,8 +8,6 @@
   "author": "minidomo",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
-    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.4.2",
     "opusscript": "0.0.6",
     "youtube-search": "^1.1.4",

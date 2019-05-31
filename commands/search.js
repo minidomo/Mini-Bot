@@ -1,8 +1,5 @@
 'use strict';
 
-const axios = require('axios').default;
-const cheerio = require('cheerio');
-const url = 'https://www.youtube.com/results?search_query=';
 const search = require('youtube-search');
 const config = require('../config');
 const opts = {
@@ -27,9 +24,9 @@ class Search {
         if (opts.key) {
             let title = args.join(' ');
             search(title, opts, (err, results) => {
-                if (err)
-                    alternative(msg, args, withCallback ? callback : undefined);
-                else {
+                if (err) {
+                    msg.channel.send('An error has occured.');
+                } else {
                     if (withCallback)
                         callback(msg, [results[0].link]);
                     else {
@@ -37,61 +34,15 @@ class Search {
                         for (let vid of results)
                             res += `\`${i++}\` *${vid.title}* by ${vid.channelTitle}\n\t<${vid.link}>\n\n`;
                         if (res === '')
-                            alternative(msg, args, withCallback ? callback : undefined);
+                            msg.channel.send('No videos were found. ;-;')
                         else
                             msg.channel.send(res);
                     }
                 }
             });
         } else
-            alternative(msg, args, withCallback ? callback : undefined);
+            msg.channel.send('Using search or searching by a video title requires a Youtube v3 API key.');
     }
 }
-
-let alternative = (msg, args, callback = undefined) => {
-    let title = args.join('+');
-    axios.get(url + title).then(response => {
-        let data = [];
-        const $ = cheerio.load(response.data);
-        let arr = $('div.yt-lockup-content').toArray();
-        for (let x = 0, i = 0; i < opts.maxResults && x < arr.length; x++) {
-            let elem = arr[x];
-            let obj = {};
-            try {
-                obj.url = 'https://www.youtube.com' + elem.firstChild.firstChild.attribs.href;
-                if (!obj.url)
-                    continue;
-                obj.title = elem.firstChild.firstChild.attribs.title;
-                if (!obj.title)
-                    continue;
-                obj.author = elem.children[1].firstChild.firstChild.data;
-                if (!obj.author)
-                    continue;
-                data.push(obj);
-                i++;
-            } catch (err) {
-                // console.log(err);
-            }
-        }
-
-        let res;
-        if (data.length > 0) {
-            if (typeof callback === 'function')
-                callback(msg, [data[0].url]);
-            else {
-                let i = 1;
-                res = '';
-                for (let elem of data)
-                    res += `\`${i++}\` *${elem.title}* by ${elem.author}\n\t<${elem.url}>\n\n`;
-            }
-        } else {
-            res = 'No videos were found. ;-;';
-        }
-        msg.channel.send(res);
-    }).catch(err => {
-        console.log(err);
-        msg.channel.send('An error has occured.');
-    });
-};
 
 module.exports = Search;
