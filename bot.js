@@ -30,7 +30,8 @@ client.on('message', msg => {
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    mainHandler.log(newMessage, chatlog, LOG_TYPE.EDITED);
+    if (oldMessage.content !== newMessage.content)
+        mainHandler.log(newMessage, chatlog, LOG_TYPE.EDITED);
 });
 
 client.on('messageDelete', deletedMessage => {

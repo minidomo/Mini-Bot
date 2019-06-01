@@ -32,7 +32,7 @@ Made with [Node.js](https://nodejs.org/en/).
   - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
 
 #### May 15, 2019
-- Added Tic Tac Toe game
+- Added Tic Tac Toe game (Changed command name [May 17, 2019](https://github.com/MiniDomo/Mini-Bot#may-17-2019))
   - `!!ttt help` for a list of commands
   - The code functions similar to Connect 4
 - `config.js.example`
@@ -50,7 +50,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - `tictactoe.js`
   - Refactored some variables
 - `ttt.js` changed to `t.js`
-  - Refacted 
+  - Refactored 
 - `config.js.example`
   - Added `remove` command
   - Adjusted change from `ttt` to `t`
@@ -59,7 +59,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - Chat logs are now also recorded in `.log` files
   - Added the folder, `chatlogs`
   - Now support logging edited messages
-- `index.js`
+- `bot.js`
   - Added event for edited messages
   - Created a `WriteStream`
 - `main.js`
@@ -84,7 +84,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - Logging
   - Now logs deleted messages and embed titles
   - Created enums for the type of data being logged
-  - Affects `main.js` and `index.js`
+  - Affects `main.js` and `bot.js`
 
 #### May 31, 2019
 - Updated [axios](https://www.npmjs.com/package/axios) to 0.19.0 to prevent potential security vulnerability
@@ -93,3 +93,4 @@ Made with [Node.js](https://nodejs.org/en/).
 - Fixed issue in `stop` and `skip`
   - `stop` did not properly check if a bot was in a voice channel and could possibly crash the bot with a consecutive call to `stop`
   - `skip` did not properly check if the queue was empty and would crash the bot when there was a call to `skip` with an empty queue if the bot had been called with at least one of its audio related commands on the respective server
+- Appropriately renamed `index.js` to `bot.js`
