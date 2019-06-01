@@ -8,7 +8,7 @@ class Stop {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
         }
-        if (!servers[msg.guild.id]) {
+        if (!msg.guild.voiceConnection) {
             msg.channel.send('The bot is not in a voice channel.');
             return false;
         }
@@ -16,7 +16,7 @@ class Stop {
     }
 
     static run(msg, args) {
-        msg.channel.send('Removing all songs from queue.');
+        msg.channel.send('Removing all songs (if any) from queue.');
         servers[msg.guild.id].repeat = { song: false, queue: false };
         servers[msg.guild.id].queue = [];
         servers[msg.guild.id].dispatcher.end();

@@ -2,13 +2,13 @@
 Discord bot for my friend's server.  
 Made with [Node.js](https://nodejs.org/en/).  
 
-#### Update April 21, 2019
+#### April 21, 2019
 - Refactored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
 
-#### Update April 22, 2019
+#### April 22, 2019
 - See [config.js.example](https://github.com/MiniDomo/Mini-Bot/blob/master/config.js.example) to understand how `config.js` should be structured.  
 
-#### Update May 4, 2019
+#### May 4, 2019
 - Audio commands added: `play`, `queue`, `repeat`, `skip`, and `stop`
   - Uses [ytdl-core](https://www.npmjs.com/package/ytdl-core) and [opusscript](https://www.npmjs.com/package/opusscript).
   - Audio commands require [FFmpeg](https://ffmpeg.org/) to be installed on host's computer.
@@ -17,7 +17,7 @@ Made with [Node.js](https://nodejs.org/en/).
   - Replaced `[]` parameters with `<>`.
   - Added support for audio commands.
 
-#### Update May 5, 2019
+#### May 5, 2019
 - New `search` command
   - Usage: `!!search <video title>`
   - Use it to search for YouTube videos
@@ -25,13 +25,13 @@ Made with [Node.js](https://nodejs.org/en/).
 - `config.js.example`
   - Added `search` command
 
-#### Update May 12, 2019
+#### May 12, 2019
 - Modified `search` command
   - Primary method uses [youtube-search](https://www.npmjs.com/package/youtube-search), which requires a [Youtube v3 API key](https://console.developers.google.com/apis/credentials). This is much faster than the previous method, which is now the secondary method. If a key is not provided, then it will utilize the secondary method.
 - `config.js.example`
   - Added an `api_keys` object to the config which can be used to store API keys such as a Youtube v3 API key.
 
-#### Update May 15, 2019
+#### May 15, 2019
 - Added Tic Tac Toe game
   - `!!ttt help` for a list of commands
   - The code functions similar to Connect 4
@@ -40,7 +40,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - `connect4.js`
   - Fixed issue where the bot would crash when a game would end due to using an undefined variable
 
-#### Update May 17, 2019
+#### May 17, 2019
 - Added `remove` command
   - Usage: `!!remove <audio number>` (0 for the current audio)
   - Removes the specified audio from the queue
@@ -55,7 +55,7 @@ Made with [Node.js](https://nodejs.org/en/).
   - Added `remove` command
   - Adjusted change from `ttt` to `t`
 
-#### Update May 22, 2019
+#### May 22, 2019
 - Chat logs are now also recorded in `.log` files
   - Added the folder, `chatlogs`
   - Now support logging edited messages
@@ -67,7 +67,7 @@ Made with [Node.js](https://nodejs.org/en/).
 - `.gitignore`
   - Ignored `.log` files in the folder, `chatlogs`.
 
-#### Update May 28, 2019
+#### May 28, 2019
 - Added `rps` (RNG Rock Paper Scissors) game
   - Usage: `!!rps <user1> <user2>`
 - Added `util` folder
@@ -77,7 +77,7 @@ Made with [Node.js](https://nodejs.org/en/).
   - Removed unnecessary `restrictable` properties in `commands`
   - Added `rps`
 
-#### Update May 29, 2019
+#### May 29, 2019
 - `play` can now receive and play audio given a video title
   - `play.js` passes a callback function to `search.js`
 - Fixed issue with `tictactoe.js` where uppercase letters would be passed in `canPlace()` but not in `place()`
@@ -86,5 +86,10 @@ Made with [Node.js](https://nodejs.org/en/).
   - Created enums for the type of data being logged
   - Affects `main.js` and `index.js`
 
-#### Update May 31, 2019
+#### May 31, 2019
 - Updated [axios](https://www.npmjs.com/package/axios) to 0.19.0 to prevent potential security vulnerability
+
+#### June 1, 2019
+- Fixed issue in `stop` and `skip`
+  - `stop` did not properly check if a bot was in a voice channel and could possibly crash the bot with a consecutive call to `stop`
+  - `skip` did not properly check if the queue was empty and would crash the bot when there was a call to `skip` with an empty queue if the bot had been called with at least one of its audio related commands on the respective server
