@@ -2,6 +2,19 @@
 Discord bot for my friend's server.  
 Made with [Node.js](https://nodejs.org/en/).  
 
+## Installation
+```
+$ git clone https://github.com/MiniDomo/Mini-Bot.git
+$ npm install
+```
+- Change `config.js.example` to `config.js`.
+- In `config.js`, set `config.token` to your bot's discord token.  
+
+## Running the bot
+```
+$ node bot
+```
+
 #### April 21, 2019
 - Refactored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
 
