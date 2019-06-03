@@ -6,7 +6,7 @@ class Info {
     }
 
     static run(msg, args) {
-        msg.channel.send('This bot was made by Mini/JB as a fun project.');
+        msg.channel.send('This bot was made by Mini/JB as a fun project. Source code on Github. https://github.com/MiniDomo/Mini-Bot');
     }
 }
 

@@ -107,3 +107,9 @@ $ node bot
   - `stop` did not properly check if a bot was in a voice channel and could possibly crash the bot with a consecutive call to `stop`
   - `skip` did not properly check if the queue was empty and would crash the bot when there was a call to `skip` with an empty queue if the bot had been called with at least one of its audio related commands on the respective server
 - Appropriately renamed `index.js` to `bot.js`
+
+#### June 3, 2019
+- Added link to github repository in `info`
+- Added `move` command
+  - Usage: `!!move <old position> <new position>`
+  - Moves an audio track to a new position

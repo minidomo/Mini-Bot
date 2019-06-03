@@ -81,6 +81,13 @@ config.commands = {
         usage: 'info',
         subcommands: null
     },
+    'move': {
+        visible: false,
+        useable: true,
+        desc: 'Moves an audio track to a specified position.',
+        usage: 'move <old position> <new position>',
+        subcommands: null
+    },
     'play': {
         visible: true,
         useable: true,
