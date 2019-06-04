@@ -16,7 +16,7 @@ class Stop {
     }
 
     static run(msg, args) {
-        msg.channel.send('Removing all songs (if any) from queue.');
+        msg.channel.send('Removing all tracks (if any) from queue.');
         servers[msg.guild.id].repeat = { song: false, queue: false };
         servers[msg.guild.id].queue = [];
         servers[msg.guild.id].dispatcher.end();

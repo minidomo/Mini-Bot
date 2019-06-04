@@ -91,7 +91,7 @@ config.commands = {
     'play': {
         visible: true,
         useable: true,
-        desc: 'Adds a song to the queue.',
+        desc: 'Adds an audio track to the queue.',
         usage: 'play <url|video title>',
         subcommands: null
     },
@@ -100,6 +100,13 @@ config.commands = {
         useable: true,
         desc: 'Shows the current audio tracks in the queue.',
         usage: 'queue',
+        subcommands: null
+    },
+    'redirect': {
+        visible: true,
+        useable: true,
+        desc: 'Directs \'Playing\' messages created from playing audio to the current text channel.',
+        usage: 'redirect',
         subcommands: null
     },
     'remove': {

@@ -24,8 +24,10 @@ class Play {
                 servers[guild].queue = [];
                 servers[guild].repeat = { song: false, queue: false };
             }
+            if (!servers[guild].channel)
+                servers[guild].channel = msg.channel;
             if (!msg.guild.voiceConnection)
-                msg.member.voiceChannel.join().then(connection => addURL(msg, args[0]));
+                msg.member.voiceChannel.join().then(connection => addURL(msg, args[0])).catch(err => { console.error(err); msg.channel.send('An error has occured. Please check console.'); });
             else
                 addURL(msg, args[0]);
         }
@@ -45,16 +47,17 @@ let addURL = (msg, URL) => {
             let last = queue.length - 1;
             msg.channel.send(`Added **${queue[last].title}** by ${queue[last].author} \`[${queue[last].duration}]\``);
             if (queue.length === 1)
-                play(msg);
+                play(msg.guild);
         } else {
+            console.error(err);
             msg.channel.send('An error has occurred.');
         }
     });
 };
-let play = msg => {
-    let server = servers[msg.guild.id];
-    msg.channel.send(`Now playing **${server.queue[0].title}** by ${server.queue[0].author} \`[${server.queue[0].duration}]\``);
-    server.dispatcher = msg.guild.voiceConnection.playStream(ytdl(server.queue[0].url, { filter: 'audioonly', quality: 'highestaudio' }));
+let play = guild => {
+    let server = servers[guild.id];
+    server.channel.send(`Now playing **${server.queue[0].title}** by ${server.queue[0].author} \`[${server.queue[0].duration}]\``);
+    server.dispatcher = guild.voiceConnection.playStream(ytdl(server.queue[0].url, { filter: 'audioonly', quality: 'highestaudio' }));
     server.dispatcher.on('end', () => {
         if (server.repeat.song || server.repeat.queue) {
             if (server.repeat.queue)
@@ -63,7 +66,7 @@ let play = msg => {
             server.queue.shift();
         }
         if (server.queue.length > 0)
-            play(msg);
+            play(guild);
     });
 };
 module.exports = Play;

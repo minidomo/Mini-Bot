@@ -27,9 +27,11 @@ class Search {
         if (opts.key) {
             let title = args.join(' ');
             search(title, opts, (err, results) => {
-                if (err)
+                if (err) {
+                    console.error(err);
+                    console.log('Using alternative search.');
                     alternative(msg, args, withCallback ? callback : undefined);
-                else {
+                } else {
                     if (withCallback)
                         callback(msg, [results[0].link]);
                     else {
@@ -70,7 +72,7 @@ let alternative = (msg, args, callback = undefined) => {
                 data.push(obj);
                 i++;
             } catch (err) {
-                // console.log(err);
+                console.error(err);
             }
         }
 
@@ -89,8 +91,8 @@ let alternative = (msg, args, callback = undefined) => {
         }
         msg.channel.send(res);
     }).catch(err => {
-        console.log(err);
-        msg.channel.send('An error has occured.');
+        console.error(err);
+        msg.channel.send('An error has occured. Please check console.');
     });
 };
 

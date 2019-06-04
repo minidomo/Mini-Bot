@@ -1,20 +1,8 @@
 # Mini Bot (Work-In-Progress)  
 Discord bot for my friend's server.  
 Made with [Node.js](https://nodejs.org/en/).  
-
-## Installation
-```
-$ git clone https://github.com/MiniDomo/Mini-Bot.git
-$ npm install
-```
-- Change `config.js.example` to `config.js`.
-- In `config.js`, set `config.token` to your bot's discord token.  
-
-## Running the bot
-```
-$ node bot
-```
-
+See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Installation.md) to install the bot.
+## Updates
 #### April 21, 2019
 - Refactored code. Connect 4 now supports multiple games and servers. Will re-add previous commands from [v1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0) in the future.  
 
@@ -113,3 +101,11 @@ $ node bot
 - Added `move` command
   - Usage: `!!move <old position> <new position>`
   - Moves an audio track to a new position
+
+#### June 4, 2019
+- Added `redirect` command
+  - Directs 'Now playing' messages created from the bot to the channel the command was last used in
+  - Usage: `!!redirect`
+- Error messages now shown in console in `play` and `search`
+- Updated some wording
+- Added Installation Guide
