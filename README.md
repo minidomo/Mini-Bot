@@ -109,3 +109,8 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
 - Error messages now shown in console in `play` and `search`
 - Updated some wording
 - Added Installation Guide
+
+#### June 5, 2019
+- Added `url` command
+  - Gets the URL of the specified audio track in the queue
+  - Usage: `!!url <position>`

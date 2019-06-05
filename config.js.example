@@ -201,6 +201,13 @@ config.commands = {
                 subcommands: null
             }
         }
+    },
+    'url': {
+        visible: true,
+        useable: true,
+        desc: 'Gets the URL of the specified audio track in the queue.',
+        usage: 'url <position>',
+        subcommands: null
     }
 };
 
