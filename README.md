@@ -114,3 +114,7 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
 - Added `url` command
   - Gets the URL of the specified audio track in the queue
   - Usage: `!!url <position>`
+
+#### June 6, 2019
+- Fixed issue in `connect4.js` where if someone typed multiple characters for a coordinate, the bot would crash
+- Added losing emotes for draws in Tic Tac Toe and Connect 4

@@ -42,7 +42,7 @@ class Connect4 {
             msg.channel.send('Is it not your turn.');
             return false;
         }
-        let letter = col[0].toLowerCase();
+        let letter = col.toLowerCase();
         if (!/^[abcdefg]$/g.test(letter)) {
             msg.channel.send('Invalid position.');
             return false;
@@ -205,8 +205,8 @@ let printEmbed = (msg, game) => {
         let res = '\n';
         if (typeof game.winner !== 'undefined') {
             if (game.winner === 2)
-                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.colors[0]}
-                    \n${game.users[1]} ${game.colors[1]}`;
+                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.colors[0]} ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
+                    \n${game.users[1]} ${game.colors[1]} ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
             else
                 res += `${game.users[game.winner]} ${game.colors[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
                     \n\n${game.users[game.winner + 1 & 1]} ${game.colors[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;

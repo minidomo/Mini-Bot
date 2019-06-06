@@ -211,8 +211,8 @@ let printEmbed = (msg, game) => {
         let res = '\n';
         if ('winner' in game) {
             if (game.winner === 2)
-                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.pieces[0]}
-                    \n${game.users[1]} ${game.pieces[1]}`;
+                res += `This match has ended as a draw!\n\n${game.users[0]} ${game.pieces[0]} ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
+                    \n${game.users[1]} ${game.pieces[1]} ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
             else
                 res += `${game.users[game.winner]} ${game.pieces[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
                     \n\n${game.users[game.winner + 1 & 1]} ${game.pieces[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
