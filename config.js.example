@@ -82,7 +82,7 @@ config.commands = {
         subcommands: null
     },
     'move': {
-        visible: false,
+        visible: true,
         useable: true,
         desc: 'Moves an audio track to a specified position.',
         usage: 'move <old position> <new position>',
