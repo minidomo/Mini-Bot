@@ -118,3 +118,12 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
 #### June 6, 2019
 - Fixed issue in `connect4.js` where if someone typed multiple characters for a coordinate, the bot would crash
 - Added losing emotes for draws in Tic Tac Toe and Connect 4
+
+#### June 7, 2019
+- Added `clear` command
+  - Clears the queue (i.e. removes all audio tracks from the queue).
+  - Usage: `!!clear`
+- Added `resume` and `pause` commands
+  - Resumes and pauses the current audio respectively
+  - Usage: `!!resume`, `!!pause`
+- More thorough check for logging edited messages

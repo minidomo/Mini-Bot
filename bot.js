@@ -30,7 +30,7 @@ client.on('message', msg => {
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-    if (oldMessage.content !== newMessage.content)
+    if (oldMessage.content !== newMessage.content || oldMessage.attachments.size !== newMessage.attachments.size || oldMessage.embeds.length !== newMessage.embeds.length)
         mainHandler.log(newMessage, chatlog, LOG_TYPE.EDITED);
 });
 

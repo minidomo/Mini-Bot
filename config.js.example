@@ -67,6 +67,13 @@ config.commands = {
             }
         }
     },
+    'clear': {
+        visible: true,
+        useable: true,
+        desc: 'Clears the queue.',
+        usage: 'clear',
+        subcommands: null
+    },
     'help': {
         visible: true,
         useable: true,
@@ -86,6 +93,13 @@ config.commands = {
         useable: true,
         desc: 'Moves an audio track to a specified position.',
         usage: 'move <old position> <new position>',
+        subcommands: null
+    },
+    'pause': {
+        visible: true,
+        useable: true,
+        desc: 'Pauses the current audio.',
+        usage: 'pause',
         subcommands: null
     },
     'play': {
@@ -137,6 +151,13 @@ config.commands = {
                 subcommands: null
             }
         }
+    },
+    'resume': {
+        visible: true,
+        useable: true,
+        desc: 'Resumes the current audio.',
+        usage: 'resume',
+        subcommands: null
     },
     'rps': {
         visible: true,
