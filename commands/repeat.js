@@ -13,7 +13,7 @@ class Repeat {
             return false;
         }
         if (!(args[0] in commands.repeat.subcommands)) {
-            msg.channel.send('`<state>` must be either `repeat` or `queue`.');
+            msg.channel.send('`<state>` must be either `current` or `queue`.');
             return false;
         }
         return true;
@@ -21,15 +21,15 @@ class Repeat {
 
     static run(msg, args) {
         if (!servers[msg.guild.id])
-            servers[msg.guild.id] = { queue: [], repeat: { song: false, queue: false } };
+            servers[msg.guild.id] = { queue: [], repeat: { current: false, queue: false } };
         if (args[0] === 'queue') {
             servers[msg.guild.id].repeat.queue = !servers[msg.guild.id].repeat.queue;
-            servers[msg.guild.id].repeat.song = false;
+            servers[msg.guild.id].repeat.currentsong = false;
             msg.channel.send(`Repeat queue has been set to **${servers[msg.guild.id].repeat.queue}**.`);
         } else {
-            servers[msg.guild.id].repeat.song = !servers[msg.guild.id].repeat.song;
+            servers[msg.guild.id].repeat.current = !servers[msg.guild.id].repeat.current;
             servers[msg.guild.id].repeat.queue = false;
-            msg.channel.send(`Repeat song has been set to **${servers[msg.guild.id].repeat.song}**.`);
+            msg.channel.send(`Repeat song has been set to **${servers[msg.guild.id].repeat.current}**.`);
         }
     }
 }

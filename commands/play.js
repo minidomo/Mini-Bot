@@ -22,7 +22,7 @@ class Play {
             if (!servers[guild]) {
                 servers[guild] = {};
                 servers[guild].queue = [];
-                servers[guild].repeat = { song: false, queue: false };
+                servers[guild].repeat = { current: false, queue: false };
             }
             if (!servers[guild].channel)
                 servers[guild].channel = msg.channel;
@@ -59,7 +59,7 @@ let play = guild => {
     server.channel.send(`Now playing **${server.queue[0].title}** by ${server.queue[0].author} \`[${server.queue[0].duration}]\``);
     server.dispatcher = guild.voiceConnection.playStream(ytdl(server.queue[0].url, { filter: 'audioonly', quality: 'highestaudio' }));
     server.dispatcher.on('end', () => {
-        if (server.repeat.song || server.repeat.queue) {
+        if (server.repeat.current || server.repeat.queue) {
             if (server.repeat.queue)
                 server.queue.push(server.queue.shift());
         } else {

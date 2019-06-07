@@ -133,7 +133,7 @@ config.commands = {
     'repeat': {
         visible: true,
         useable: true,
-        desc: 'Turn repeat on/off for either a song or the whole queue.',
+        desc: 'Turn repeat on/off for either the current track or the whole queue.',
         usage: 'repeat <state>',
         subcommands: {
             'queue': {
@@ -143,11 +143,11 @@ config.commands = {
                 usage: 'queue',
                 subcommands: null
             },
-            'song': {
+            'current': {
                 visible: true,
                 useable: true,
                 desc: 'Repeats the current audio track.',
-                usage: 'song',
+                usage: 'current',
                 subcommands: null
             }
         }

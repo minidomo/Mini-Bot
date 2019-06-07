@@ -126,4 +126,5 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
 - Added `resume` and `pause` commands
   - Resumes and pauses the current audio respectively
   - Usage: `!!resume`, `!!pause`
+- Changed the `song` state in `repeat` to `current`
 - More thorough check for logging edited messages
