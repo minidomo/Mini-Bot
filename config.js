@@ -3,7 +3,7 @@
 let config = {};
 
 // discord token
-config.token = '';
+config.token = process.env.BOT_TOKEN;
 
 // command prefix
 config.prefix = '!!';
@@ -13,7 +13,7 @@ config.activity = { name: null, options: { url: null, type: null } };
 
 // bot API keys
 config.api_keys = {
-    youtube: null
+    youtube: process.env.YOUTUBE_API_KEY
 };
 
 // servers
