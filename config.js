@@ -9,7 +9,7 @@ config.token = process.env.BOT_TOKEN;
 config.prefix = '!!';
 
 // bot activity
-config.activity = { name: null, options: { url: null, type: null } };
+config.activity = { name: '!!help', options: { url: null, type: null } };
 
 // bot API keys
 config.api_keys = {
