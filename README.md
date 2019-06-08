@@ -133,3 +133,4 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
 - Added `shuffle` command
   - Shuffles the queue when there's at least 3 tracks in the queue.
   - Usage: `!!shuffle`
+- Updated dependencies for `youtube-search` in `package-lock.json` to remove vulnerabilities
