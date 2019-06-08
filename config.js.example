@@ -173,6 +173,13 @@ config.commands = {
         usage: 'search <video title>',
         subcommands: null
     },
+    'shuffle': {
+        visible: true,
+        useable: true,
+        desc: 'Shuffles the queue.',
+        usage: 'shuffle',
+        subcommands: null
+    },
     'skip': {
         visible: true,
         useable: true,

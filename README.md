@@ -128,3 +128,8 @@ See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Ins
   - Usage: `!!resume`, `!!pause`
 - Changed the `song` state in `repeat` to `current`
 - More thorough check for logging edited messages
+
+#### June 8, 2019
+- Added `shuffle` command
+  - Shuffles the queue when there's at least 3 tracks in the queue.
+  - Usage: `!!shuffle`
