@@ -28,9 +28,9 @@ class Search {
             let title = args.join(' ');
             search(title, opts, (err, results) => {
                 if (err) {
-                    console.error(err);
-                    console.log('Using alternative search.');
-                    alternative(msg, args, withCallback ? callback : undefined);
+                    msg.logger.error(err);
+                    msg.logger.info('Using alternative search.');
+                    alternative(msg, args, callback);
                 } else {
                     if (withCallback)
                         callback(msg, [results[0].link]);
@@ -39,14 +39,14 @@ class Search {
                         for (let vid of results)
                             res += `\`${i++}\` *${vid.title}* by ${vid.channelTitle}\n\t<${vid.link}>\n\n`;
                         if (res === '')
-                            alternative(msg, args, withCallback ? callback : undefined);
+                            alternative(msg, args, callback);
                         else
                             msg.channel.send(res);
                     }
                 }
             });
         } else
-            alternative(msg, args, withCallback ? callback : undefined);
+            alternative(msg, args, callback);
     }
 }
 
@@ -72,7 +72,7 @@ let alternative = (msg, args, callback = undefined) => {
                 data.push(obj);
                 i++;
             } catch (err) {
-                console.error(err);
+                msg.logger.error(err);
             }
         }
 
@@ -91,7 +91,7 @@ let alternative = (msg, args, callback = undefined) => {
         }
         msg.channel.send(res);
     }).catch(err => {
-        console.error(err);
+        msg.logger.error(err);
         msg.channel.send('An error has occured. Please check console.');
     });
 };

@@ -130,3 +130,8 @@
   - Shuffles the queue when there's at least 3 tracks in the queue.
   - Usage: `!!shuffle`
 - Updated dependencies for `youtube-search` in `package-lock.json` to remove vulnerabilities
+
+#### June 10, 2019
+- Changed structure of extensions in `ext`
+- Logging now uses [winston](https://www.npmjs.com/package/winston) for improved performance
+- Output to console and `.logs` in `chatlogs` are now the same and formatted similarly to the previous `.logs`

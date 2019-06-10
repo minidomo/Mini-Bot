@@ -27,7 +27,7 @@ class Play {
             if (!servers[guild].channel)
                 servers[guild].channel = msg.channel;
             if (!msg.guild.voiceConnection)
-                msg.member.voiceChannel.join().then(connection => addURL(msg, args[0])).catch(err => { console.error(err); msg.channel.send('An error has occured. Please check console.'); });
+                msg.member.voiceChannel.join().then(connection => addURL(msg, args[0])).catch(err => { msg.logger.error(err); msg.channel.send('An error has occured. Please check console.'); });
             else
                 addURL(msg, args[0]);
         }
@@ -49,7 +49,7 @@ let addURL = (msg, URL) => {
             if (queue.length === 1)
                 play(msg.guild);
         } else {
-            console.error(err);
+            msg.logger.error(err);
             msg.channel.send('An error has occurred.');
         }
     });
