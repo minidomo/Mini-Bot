@@ -1,5 +1,6 @@
 'use strict';
 
+const Discord = require('discord.js');
 const servers = require('../config').servers.connect4;
 const UserUtil = require('../util/user');
 const MAXR = 7, MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
@@ -20,34 +21,34 @@ class Connect4 {
     }
 
     static ff(msg) {
-        let game = getGame(msg);
-        let mentions = UserUtil.idToMentions(msg.author.id);
+        const game = getGame(msg);
+        const mentions = UserUtil.idToMentions(msg.author.id);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
         printEmbed(msg, game);
         removeGame(msg);
     }
 
-    static canPlace(msg, col) {
-        let game = getGame(msg);
+    static canPlace(msg, [col]) {
+        const game = getGame(msg);
         if (!game) {
             msg.channel.send('You are not playing a Connect 4 game.');
             return false;
         }
-        let isTurn = () => {
-            let mentions = UserUtil.idToMentions(msg.author.id);
-            let cur = game.users[game.turn & 1]
+        const isTurn = () => {
+            const mentions = UserUtil.idToMentions(msg.author.id);
+            const cur = game.users[game.turn & 1]
             return cur === mentions[0] || cur === mentions[1];
         };
         if (!isTurn()) {
             msg.channel.send('Is it not your turn.');
             return false;
         }
-        let letter = col.toLowerCase();
+        const letter = col.toLowerCase();
         if (!/^[abcdefg]$/g.test(letter)) {
             msg.channel.send('Invalid position.');
             return false;
         }
-        let c = KeyMap[letter];
+        const c = KeyMap[letter];
         for (let r = 0; r < MAX_PLAYABLE_ROWS; r++)
             if (game.board[r][c] == Piece.WHITE)
                 return true;
@@ -55,9 +56,9 @@ class Connect4 {
         return false;
     }
 
-    static place(msg, args) {
-        let game = getGame(msg);
-        let c = KeyMap[args[1].toLowerCase()];
+    static place(msg, [col]) {
+        const game = getGame(msg);
+        const c = KeyMap[col.toLowerCase()];
         let r = 0;
         while (r < MAXR && game.board[r][c] === Piece.WHITE)
             r++;
@@ -74,25 +75,25 @@ class Connect4 {
             removeGame(msg);
     }
 
-    static canStart(msg, user1, user2) {
+    static canStart(msg, [user1, user2]) {
         if (!UserUtil.mentionIsAUser(user1) || !UserUtil.mentionIsAUser(user2)) {
             msg.channel.send('Both players must be users.');
             return false;
         }
-        let mentionToID = mention => mention.replace(/^<@!?/g, '').replace(/>$/g, '');
-        let u1 = UserUtil.mentionToID(user1);
-        let u2 = UserUtil.mentionToID(user2);
+        const mentionToID = mention => mention.replace(/^<@!?/g, '').replace(/>$/g, '');
+        const u1 = UserUtil.mentionToID(user1);
+        const u2 = UserUtil.mentionToID(user2);
         if (UserUtil.isBot(msg.guild.members, u1) || UserUtil.isBot(msg.guild.members, u2)) {
             msg.channel.send('Bots are not allowed to play.');
             return false;
         }
-        let id = msg.guild.id;
-        if (!servers[id])
-            servers[id] = [];
-        let author = msg.author.id;
+        const id = msg.guild.id;
+        if (!servers.has(id))
+            servers.set(id, []);
+        const author = msg.author.id;
         if ((author === u1 && author !== u2) || (author !== u1 && author === u2)) {
-            let g1 = getGameByMention(id, user1);
-            let g2 = getGameByMention(id, user2);
+            const g1 = getGameByMention(id, user1);
+            const g2 = getGameByMention(id, user2);
             if (g1 || g2) {
                 msg.channel.send('At least one of the users is currently in a game.');
                 return false;
@@ -104,52 +105,52 @@ class Connect4 {
         return true;
     }
 
-    static start(msg, args) {
-        let game = {
+    static start(msg, [user1, user2]) {
+        const game = {
             users: [],
             colors: [],
             board: [],
             turn: 0
         };
         if (Math.random() < .5)
-            game.users.push(args[1], args[2]);
+            game.users.push(user1, user2);
         else
-            game.users.push(args[2], args[1]);
+            game.users.push(user2, user1);
         if (Math.random() < .5)
             game.colors.push(Piece.RED, Piece.BLUE);
         else
             game.colors.push(Piece.BLUE, Piece.RED);
-        for (let r = 0; r < MAXR; r++) {
+        for (let r = 0; r < MAX_PLAYABLE_ROWS; r++) {
             game.board.push([]);
-            if (r < MAX_PLAYABLE_ROWS)
-                for (let c = 0; c < MAXC; c++)
-                    game.board[r].push(Piece.WHITE);
-            else
-                for (let c of 'abcdefg')
-                    game.board[r].push(`:regional_indicator_${c}:`);
+            for (let c = 0; c < MAXC; c++)
+                game.board[r].push(Piece.WHITE);
         }
-        servers[msg.guild.id].push(game);
+        game.board.push([]);
+        for (const c of 'abcdefg')
+            game.board[MAX_PLAYABLE_ROWS].push(`:regional_indicator_${c}:`);
+        servers.get(msg.guild.id).push(game);
         printEmbed(msg, game);
     }
 }
 
-let removeGame = msg => {
-    let guild = msg.guild.id, x = 0;
-    let mentions = UserUtil.idToMentions(msg.author.id);
-    for (let server of servers[guild]) {
+const removeGame = msg => {
+    const guild = msg.guild.id;
+    let x = 0;
+    const mentions = UserUtil.idToMentions(msg.author.id);
+    for (const server of servers.get(guild)) {
         for (let a = 0; a < 2; a++)
             if (server.users[a] === mentions[0] || server.users[a] === mentions[1]) {
-                servers[guild].splice(x, 1);
+                servers.get(guild).splice(x, 1);
                 return;
             }
         x++;
     }
 };
 
-let win = (game, r, c) => {
-    let count = (dx, dy) => {
+const win = (game, r, c) => {
+    const count = (dx, dy) => {
+        const color = game.board[r][c];
         let count = 0;
-        let color = game.board[r][c];
         let row = r + dx;
         let col = c + dy;
         while (row >= 0 && col >= 0 && row < MAX_PLAYABLE_ROWS && col < MAXC && count < 3 && game.board[row][col] === color) {
@@ -159,31 +160,31 @@ let win = (game, r, c) => {
         }
         return count;
     };
-    let dx = [0, 0, -1, 1, -1, 1, 1, -1];
-    let dy = [-1, 1, 0, 0, -1, 1, -1, 1];
+    const dx = [0, 0, -1, 1, -1, 1, 1, -1];
+    const dy = [-1, 1, 0, 0, -1, 1, -1, 1];
     for (let x = 0; x < dx.length; x += 2) {
-        let c = count(dx[x], dy[x]) + count(dx[x + 1], dy[x + 1]);
+        const c = count(dx[x], dy[x]) + count(dx[x + 1], dy[x + 1]);
         if (c >= 3)
             return true;
     }
     return false;
 };
 
-let getGameByMention = (guild, mention) => {
-    if (!servers[guild])
+const getGameByMention = (guild, mention) => {
+    if (!servers.has(guild))
         return undefined;
-    for (let server of servers[guild])
+    for (const server of servers.get(guild))
         if (server.users[0] === mention || server.users[1] === mention)
             return server;
     return undefined;
 };
 
-let getGame = msg => {
-    let guild = msg.guild.id;
-    if (!servers[guild])
+const getGame = msg => {
+    const guild = msg.guild.id;
+    if (!servers.has(guild))
         return undefined;
-    let mentions = UserUtil.idToMentions(msg.author.id);
-    for (let game of servers[guild]) {
+    const mentions = UserUtil.idToMentions(msg.author.id);
+    for (const game of servers.get(guild)) {
         for (let a = 0; a < 2; a++)
             if (game.users[a] === mentions[0] || game.users[a] === mentions[1])
                 return game;
@@ -191,17 +192,17 @@ let getGame = msg => {
     return undefined;
 };
 
-let printEmbed = (msg, game) => {
-    let getBoard = () => {
+const printEmbed = (msg, game) => {
+    const getBoard = () => {
         let res = '';
-        for (let r of game.board) {
-            for (let c of r)
+        for (const r of game.board) {
+            for (const c of r)
                 res += c + ' ';
             res = res.substr(0, res.length - 1) + '\n';
         }
         return res;
     };
-    let lowerDesc = () => {
+    const lowerDesc = () => {
         let res = '\n';
         if (typeof game.winner !== 'undefined') {
             if (game.winner === 2)
@@ -218,9 +219,11 @@ let printEmbed = (msg, game) => {
                 \n\n${game.users[game.turn & 1]}'s Move`;
         return res;
     };
-    let desc = getBoard() + lowerDesc();
-    let embed = new (require('discord.js')).RichEmbed({ description: desc, title: 'Connect 4' });
-    embed.setColor('AQUA');
+    const desc = getBoard() + lowerDesc();
+    const embed = new Discord.RichEmbed()
+        .setColor('AQUA')
+        .setTitle('Connect 4')
+        .setDescription(desc);
     msg.channel.send(embed);
 };
 

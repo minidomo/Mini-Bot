@@ -135,3 +135,28 @@
 - Changed structure of extensions in `ext`
 - Logging now uses [winston](https://www.npmjs.com/package/winston) for improved performance
 - Output to console and `.logs` in `chatlogs` are now the same and formatted similarly to the previous `.logs`
+
+#### June 11, 2019
+- Changed most uses of `let` to `const` for improved coding style
+- Utilized more [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) overall
+- Changed structure of commands
+  - Instead of classes, they are now objects and include properties that were in `config.commands`
+  - Commands and sub-commands now use maps and are initialized upon startup
+  - Sub-commands are stored in folders named by their parent command while in a `subcommand` folder
+- Removed all leftover `chatlog` objects in `bot.js` that were not removed in the previous update
+- Added an `exiting` function that will run when an uncaught exception has occurred or the program is closed via `SIGINT` (`Ctrl + C`)
+  - This will disconnect the bot from voice channels it is in
+- Extensions now have a `active` property which indicate whether or not they can be used
+- Restructured `config.js`
+  - `config.commands` is now a map
+  - `config.features` is removed in replacement of extensions having their own `active` property and an array of active extensions is initialized in `./handler/main.js`
+  - `config.servers` now use maps
+- By default, commands with parameters now send out a message showing their usage or help command if the user inputted an incorrect amount of parameters
+- Added documentation to `.js` files in `handler`
+- Updated some documentation in `user.js`
+- Music/video related changes
+  - The use of the word 'audio' is now being replaced by 'video' for better representation of what the users are sending
+  - Removed the `dispatcher` property and now the dispatcher must be called by utilizing the Message object (the `msg` parameter by default)
+  - Added `currentVideo` property which indicates the current video playing
+  - The current video playing is now considered not in the queue
+    - This fixed multiple issues such as using `clear` would remove all songs, and using `skip` would not be able to skip the current video

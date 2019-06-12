@@ -1,7 +1,5 @@
 'use strict';
 
-const Discord = require('discord.js');
-
 class Commands {
     /**
      * Returns an Object that contains a Boolean value that indiciates if the length of args is equal to the given `limit`, and a String in response to if the length of args is not equal to the given `limit`
@@ -9,10 +7,10 @@ class Commands {
      * @param {number} limit the number of arguments required
      * @param {string} less the message sent if there are less arguments than the limit. Default value is null.
      * @param {string} more the message sent if there are more arguments than the limit. Default value is null.
-     * @return {{result: boolean, message?: string}} an Object that contains a Boolean value that indiciates if the length of args is equal to the given `limit`, and a String in response to if the length of args is not equal to the given `limit`
+     * @returns {{result: boolean, message?: string}} an Object that contains a Boolean value that indiciates if the length of args is equal to the given `limit`, and a String in response to if the length of args is not equal to the given `limit`
      */
     static checkArgumentCount(args, limit, less = null, more = null) {
-        let obj = {};
+        const obj = {};
         if (args.length === limit) {
             obj.result = true;
         } else {

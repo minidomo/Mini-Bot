@@ -1,7 +1,12 @@
 'use strict';
 
-class Resume {
-    static pass(msg, args) {
+module.exports = {
+    name: 'resume',
+    visible: true,
+    useable: true,
+    desc: 'Resumes the current audio.',
+    usage: 'resume',
+    pass(msg, obj) {
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
@@ -11,20 +16,17 @@ class Resume {
             return false;
         }
         if (!msg.guild.voiceConnection.dispatcher) {
-            msg.channel.send('Nothing is currently playing.');
+            msg.channel.send('Nothing is playing.');
             return false;
         }
         if (!msg.guild.voiceConnection.dispatcher.paused) {
-            msg.channel.send('The current audio is not paused.');
+            msg.channel.send('The current video is not paused.');
             return false;
         }
         return true;
-    }
-
-    static run(msg, args) {
+    },
+    run(msg, obj) {
         msg.guild.voiceConnection.dispatcher.resume();
         msg.channel.send('Resuming.');
     }
-}
-
-module.exports = Resume;
+};

@@ -15,6 +15,14 @@ const logger = winston.createLogger({
     format: winston.format.printf(log => `[${log.level.toUpperCase()}] - ${log.message}`)
 });
 
+// storing commands in a map
+const fs = require('fs');
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    config.commands.set(command.name, command);
+}
+
 client.on('ready', () => {
     logger.info(`Logged in as ${client.user.tag}!`);
     if (config.activity.name)
@@ -26,22 +34,36 @@ client.on('message', msg => {
     mainHandler.log(msg, LOG_TYPE.NEW);
     if (!msg.author.bot)
         if (msg.content.startsWith(config.prefix)) {
-            let obj = commandHandler.getArguments(msg, config.prefix);
-            let success = commandHandler.handle(msg, obj, config);
+            const obj = commandHandler.getArguments(msg.content);
+            const success = commandHandler.handle(msg, obj);
         } else {
-            mainHandler.handleFeature(msg, config.features.active);
+            mainHandler.handleFeature(msg);
         }
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
     newMessage.logger = logger;
     if (oldMessage.content !== newMessage.content || oldMessage.attachments.size !== newMessage.attachments.size || oldMessage.embeds.length !== newMessage.embeds.length)
-        mainHandler.log(newMessage, chatlog, LOG_TYPE.EDITED);
+        mainHandler.log(newMessage, LOG_TYPE.EDITED);
 });
 
 client.on('messageDelete', deletedMessage => {
     deletedMessage.logger = logger;
-    mainHandler.log(deletedMessage, chatlog, LOG_TYPE.DELETED);
+    mainHandler.log(deletedMessage, LOG_TYPE.DELETED);
 });
 
 client.login(config.token);
+
+process.on('SIGINT', exiting());
+process.on('uncaughtException', exiting());
+
+const exiting = () => {
+    // when closing the program, disconnect the bot from any voice channels
+    logger.info('Disconnecting from voice channels');
+    for (const guildID of config.servers.audio.keys()) {
+        const guild = client.guilds.get(guildID);
+        if (guild.voiceConnection)
+            guild.voiceConnection.disconnect();
+    }
+    process.exit(0);
+};

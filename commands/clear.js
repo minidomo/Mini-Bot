@@ -2,23 +2,25 @@
 
 const servers = require('../config').servers.audio;
 
-class Clear {
-    static pass(msg, args) {
+module.exports = {
+    name: 'clear',
+    visible: true,
+    useable: true,
+    desc: 'Clears the queue.',
+    usage: 'clear',
+    pass(msg, obj) {
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
         }
-        if (!servers[msg.guild.id] || servers[msg.guild.id].queue.length === 0) {
-            msg.channel.send('There are currently no songs in the queue.');
+        if (!servers.has(msg.guild.id) || servers.get(msg.guild.id).queue.length === 0) {
+            msg.channel.send('The queue is empty.');
             return false;
         }
         return true;
-    }
-
-    static run(msg, args) {
+    },
+    run(msg, obj) {
         msg.channel.send('Clearing the queue.');
-        servers[msg.guild.id].queue = [];
+        servers.get(msg.guild.id).queue = [];
     }
-}
-
-module.exports = Clear;
+};
