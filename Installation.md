@@ -1,5 +1,6 @@
 # Installation Guide
 ## Creating the bot and adding to your servers
+Note that this section is also explained on the official [discord.js guide](https://discordjs.guide/preparations/).
 1. Go to https://discordapp.com/developers/applications/ and log in
 2. Click `New Application`
 3. Give your bot a name and click `Create`

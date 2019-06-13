@@ -32,7 +32,7 @@ class User {
 
     /**
      * Returns true if the given `id` is a bot, false otherwise
-     * @param {Collection<Snowflake, GuildChannel>} members the collection of members in a discord server
+     * @param {Discord.Collection<string, Discord.GuildMember>} members the collection of members in a discord server
      * @param {string} id the discord ID of a user
      * @return true if the given `id` is a bot, false otherwise
      * @example

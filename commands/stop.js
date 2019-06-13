@@ -2,8 +2,13 @@
 
 const servers = require('../config').servers.audio;
 
-class Stop {
-    static pass(msg, args) {
+module.exports = {
+    name: 'stop',
+    visible: true,
+    useable: true,
+    desc: 'Stops the audio, and the bot leaves.',
+    usage: 'stop',
+    pass(msg, obj) {
         if (!msg.member.voiceChannel) {
             msg.channel.send('You must be in a voice channel to use this command.');
             return false;
@@ -13,15 +18,14 @@ class Stop {
             return false;
         }
         return true;
-    }
-
-    static run(msg, args) {
+    },
+    run(msg, obj) {
         msg.channel.send('Removing all tracks (if any) from queue.');
-        servers[msg.guild.id].repeat = { current: false, queue: false };
-        servers[msg.guild.id].queue = [];
-        servers[msg.guild.id].dispatcher.end();
+        const server = servers.get(msg.guild.id);
+        server.repeat = { current: false, queue: false };
+        server.queue = [];
+        if (msg.guild.voiceConnection.dispatcher)
+            msg.guild.voiceConnection.dispatcher.end();
         msg.guild.voiceConnection.disconnect();
     }
-}
-
-module.exports = Stop;
+};

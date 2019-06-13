@@ -1,11 +1,11 @@
 'use strict';
 
 const Discord = require('discord.js');
-const config = require('../config');
+const config = require('../../../config');
 
-// creating the help embed once to send out fast
+// creating the help embed once to send out fast 
 const fs = require('fs');
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands/subcommands/c4').filter(file => file.endsWith('.js'));
 let description = '';
 for (const file of commandFiles) {
     const command = require(`./${file}`);

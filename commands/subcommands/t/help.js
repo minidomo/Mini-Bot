@@ -1,11 +1,11 @@
 'use strict';
 
 const Discord = require('discord.js');
-const config = require('../config');
+const config = require('../../../config');
 
-// creating the help embed once to send out fast
+// creating the help embed once to send out fast 
 const fs = require('fs');
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands/subcommands/t').filter(file => file.endsWith('.js'));
 let description = '';
 for (const file of commandFiles) {
     const command = require(`./${file}`);
@@ -14,14 +14,14 @@ for (const file of commandFiles) {
 }
 const helpEmbed = new Discord.RichEmbed()
     .setColor('RED')
-    .setTitle(`Sub-commands | Prefix: ${config.prefix}c4`)
+    .setTitle(`Sub-commands | Prefix: ${config.prefix}t`)
     .setDescription(description);
 
 module.exports = {
     name: 'help',
     visible: true,
     useable: true,
-    desc: `Shows the sub-commands of \`${config.prefix}c4\`.`,
+    desc: `Shows the sub-commands of \`${config.prefix}t\`.`,
     usage: 'help',
     pass(msg, obj) {
         return true;
