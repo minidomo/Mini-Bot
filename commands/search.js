@@ -15,7 +15,7 @@ const opts = {
 const alternative = (msg, obj, callback) => {
     const { args } = obj;
     const title = args.join('+');
-    axios.get(url + title).then(response => {
+    axios.get(encodeURI(url + title)).then(response => {
         const data = [];
         const $ = cheerio.load(response.data);
         const arr = $('div.yt-lockup-content').toArray();
