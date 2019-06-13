@@ -66,4 +66,8 @@ const exiting = () => {
 };
 
 process.on('SIGINT', exiting);
-process.on('uncaughtException', exiting);
+process.on('SIGTERM', exiting);
+process.on('uncaughtException', (err) => {
+    logger.err(err);
+    exiting();
+});

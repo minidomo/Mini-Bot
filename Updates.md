@@ -164,3 +164,8 @@
 #### June 12, 2019
 - Moved placement of process events to enable proper functionality
   - The bot will now disconnect from any voice channels when an uncaught exception occurs or is closed via `Ctrl + C`
+
+#### June 13, 2019
+- Searching via `search` or `play` now supports non-ASCII characters when utilizing the alternative method
+- Added `SIGTERM` event for exiting
+- `uncaughtException` event now prints out the error before exiting the program
