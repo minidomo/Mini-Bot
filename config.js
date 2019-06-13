@@ -6,10 +6,10 @@ let config = {};
 config.token = process.env.BOT_TOKEN;
 
 // command prefix
-config.prefix = '!';
+config.prefix = '!!';
 
 // bot activity
-config.activity = { name: '!help v3', options: { url: null, type: null } };
+config.activity = { name: '!!help', options: { url: null, type: null } };
 
 // bot API keys
 config.api_keys = {
