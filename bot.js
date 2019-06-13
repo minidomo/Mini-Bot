@@ -54,9 +54,6 @@ client.on('messageDelete', deletedMessage => {
 
 client.login(config.token);
 
-process.on('SIGINT', exiting());
-process.on('uncaughtException', exiting());
-
 const exiting = () => {
     // when closing the program, disconnect the bot from any voice channels
     logger.info('Disconnecting from voice channels');
@@ -67,3 +64,6 @@ const exiting = () => {
     }
     process.exit(0);
 };
+
+process.on('SIGINT', exiting);
+process.on('uncaughtException', exiting);

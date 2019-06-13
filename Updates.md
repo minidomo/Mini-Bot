@@ -160,3 +160,7 @@
   - Added `currentVideo` property which indicates the current video playing
   - The current video playing is now considered not in the queue
     - This fixed multiple issues such as using `clear` would remove all songs, and using `skip` would not be able to skip the current video
+
+#### June 12, 2019
+- Moved placement of process events to enable proper functionality
+  - The bot will now disconnect from any voice channels when an uncaught exception occurs or is closed via `Ctrl + C`
