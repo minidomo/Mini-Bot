@@ -6,6 +6,7 @@ const winston = require('winston');
 
 const config = require('./config');
 const commandHandler = require('./handler/command');
+const reactionHandler = require('./handler/reaction');
 const { handler: mainHandler, logtype: LOG_TYPE } = require('./handler/main');
 const logger = winston.createLogger({
     transports: [
@@ -22,6 +23,11 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     config.commands.set(command.name, command);
 }
+// initialize types
+config.embedTypes.Game
+    .set('Tic Tac Toe', require('./games/tictactoe'))
+    .set('Connect 4', require('./games/connect4'))
+    .set('Test', require('./games/test'));
 
 client.on('ready', () => {
     logger.info(`Logged in as ${client.user.tag}!`);
@@ -52,6 +58,17 @@ client.on('messageDelete', deletedMessage => {
     mainHandler.log(deletedMessage, LOG_TYPE.DELETED);
 });
 
+client.on('messageReactionAdd', (messageReaction, user) => {
+    if (user.bot)
+        return;
+    if (messageReaction.message.author.bot) {
+        const ret = reactionHandler.check(messageReaction);
+        if (ret.passed) {
+            const success = ret.handle(messageReaction, user);
+        }
+    }
+});
+
 client.login(config.token);
 
 const exiting = () => {
@@ -68,6 +85,6 @@ const exiting = () => {
 process.on('SIGINT', exiting);
 process.on('SIGTERM', exiting);
 process.on('uncaughtException', (err) => {
-    logger.err(err);
+    logger.error(err);
     exiting();
 });

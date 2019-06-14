@@ -169,3 +169,7 @@
 - Searching via `search` or `play` now supports non-ASCII characters when utilizing the alternative method
 - Added `SIGTERM` event for exiting
 - `uncaughtException` event now prints out the error before exiting the program
+
+#### June 14, 2019
+- Connect 4 now uses react emojis to control the game rather than typing commands
+  - `p` and `ff` sub-commands have been removed from `c4`
