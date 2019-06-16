@@ -26,8 +26,8 @@ for (const file of commandFiles) {
 // initialize types
 config.embedTypes.Game
     .set('Tic Tac Toe', require('./games/tictactoe'))
-    .set('Connect 4', require('./games/connect4'))
-    .set('Test', require('./games/test'));
+    .set('Connect 4', require('./games/connect4'));
+//  .set('Test', require('./games/test'));
 
 client.on('ready', () => {
     logger.info(`Logged in as ${client.user.tag}!`);

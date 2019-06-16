@@ -173,3 +173,6 @@
 #### June 14, 2019
 - Connect 4 now uses react emojis to control the game rather than typing commands
   - `p` and `ff` sub-commands have been removed from `c4`
+
+#### June 15, 2019
+- Using the `help` command now has the appropriate title

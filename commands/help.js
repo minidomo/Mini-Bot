@@ -14,14 +14,14 @@ for (const file of commandFiles) {
 }
 const helpEmbed = new Discord.RichEmbed()
     .setColor('RED')
-    .setTitle(`Sub-commands | Prefix: ${config.prefix}c4`)
+    .setTitle(`Commands | Prefix: ${config.prefix}`)
     .setDescription(description);
 
 module.exports = {
     name: 'help',
     visible: true,
     useable: true,
-    desc: `Shows the sub-commands of \`${config.prefix}c4\`.`,
+    desc: `Shows the available commands.`,
     usage: 'help',
     pass(msg, obj) {
         return true;
