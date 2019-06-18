@@ -1,11 +1,18 @@
 'use strict';
 
 const Discord = require('discord.js');
-const servers = require('../config').servers.tictactoe;
+const Servers = require('../config').servers.tictactoe;
 const UserUtil = require('../util/user');
 const MAXR = 3, MAXC = 3, MAXTURNS = 9;
 const Piece = { X: ':x:', O: ':o:', DEFAULT: ':white_large_square:' };
-const ASCII_VALUE = { ONE: 49, LOWERCASE_A: 97 };
+const Emojis = new Map()
+    .set('🇦', 0)
+    .set('🇧', 1)
+    .set('🇨', 2)
+    .set('1⃣', 0)
+    .set('2⃣', 1)
+    .set('3⃣', 2)
+    .set('❌', -1);
 const Emotes = {
     WIN: [':stuck_out_tongue:', ':joy:', ':stuck_out_tongue_winking_eye:', ':sunglasses:', ':first_place:', ':kissing_heart:'],
     LOSE: [':thinking:', ':disappointed:', ':tired_face:', ':rage:', ':sob:', ':second_place:', ':interrobang:']
@@ -13,50 +20,68 @@ const Emotes = {
 
 // number & 1 === number % 2
 class TicTacToe {
-    static canFF(msg) {
-        if (getGame(msg))
+    static canFF(guildID, userID) {
+        if (getGame(guildID, userID))
             return true;
-        msg.channel.send('You are not playing a Tick Tack Toe game.');
         return false;
     }
 
-    static ff(msg) {
-        const game = getGame(msg);
-        const mentions = UserUtil.idToMentions(msg.author.id);
+    static ff(guildID, userID) {
+        const game = getGame(guildID, userID);
+        const mentions = UserUtil.idToMentions(userID);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
-        printEmbed(msg, game);
-        removeGame(msg);
+        printEmbed(game);
+        removeGame(guildID, userID);
     }
 
-    static canPlace(msg, [loc]) {
-        const game = getGame(msg);
-        if (!game) {
-            msg.channel.send('You are not playing a Tick Tack Toe game.');
-            return false;
+    static handleReaction(reaction, user, add) {
+        const emoji = reaction.emoji.name;
+        let status = false;
+        if (Emojis.has(emoji)) {
+            const userID = user.id;
+            const guildID = reaction.message.guild.id;
+            const val = Emojis.get(emoji);
+            if (val >= 0) {
+                const game = getGame(guildID, userID);
+                if (game && isUsersTurn(game, userID)) {
+                    if (add) {
+                        game.move.push(reaction);
+                        const obj = this.canPlace(game, user);
+                        if (status = obj.result)
+                            this.place(guildID, userID, game, obj.location);
+                    } else {
+                        game.move.shift();
+                    }
+                } else {
+                    reaction.remove(user);
+                }
+            } else {
+                if (status = this.canFF(guildID, userID))
+                    this.ff(guildID, userID);
+            }
         }
-        const isTurn = () => {
-            const mentions = UserUtil.idToMentions(msg.author.id);
-            const cur = game.users[game.turn & 1]
-            return cur === mentions[0] || cur === mentions[1];
-        };
-        if (!isTurn()) {
-            msg.channel.send('Is it not your turn.');
-            return false;
-        }
-        const [r, c] = getCoords(loc);
-        if (typeof r === 'undefined' || typeof c === 'undefined') {
-            msg.channel.send('Invalid position.');
-            return false;
-        }
+        return status;
+    }
+
+    static canPlace(game, user) {
+        if (game.move.length < 2)
+            return { result: false };
+        const reactions = [...game.move];
+        const firstType = getType(reactions[0].emoji.name);
+        const secondType = getType(reactions[1].emoji.name);
+        for (const reaction of game.move)
+            reaction.remove(user);
+        game.move = [];
+        if (firstType === secondType)
+            return { result: false };
+        const r = Emojis.get(reactions[firstType].emoji.name);
+        const c = Emojis.get(reactions[firstType + 1 & 1].emoji.name);
         if (game.board[r][c] === Piece.DEFAULT)
-            return true;
-        msg.channel.send('Invalid position.');
-        return false;
+            return { result: true, location: [r, c] };
+        return { result: false };
     }
 
-    static place(msg, [loc]) {
-        const game = getGame(msg);
-        const [r, c] = getCoords(loc);
+    static place(guildID, userID, game, [r, c]) {
         game.board[r][c] = game.pieces[game.turn & 1];
         if (win(game, r, c))
             game.winner = game.turn & 1;
@@ -65,9 +90,9 @@ class TicTacToe {
             if (game.turn === MAXTURNS)
                 game.winner = 2;
         }
-        printEmbed(msg, game);
+        printEmbed(game);
         if ('winner' in game)
-            removeGame(msg);
+            removeGame(guildID, userID);
     }
 
     static canStart(msg, [user1, user2]) {
@@ -82,8 +107,8 @@ class TicTacToe {
             return false;
         }
         const id = msg.guild.id;
-        if (!servers.has(id))
-            servers.set(id, []);
+        if (!Servers.has(id))
+            Servers.set(id, []);
         const author = msg.author.id;
         if ((author === u1 && author !== u2) || (author !== u1 && author === u2)) {
             const g1 = getGameByMention(id, user1);
@@ -93,7 +118,10 @@ class TicTacToe {
                 return false;
             }
         } else {
-            msg.channel.send('You cannot start a game for other people.');
+            if (author === u1 && author === u2)
+                msg.channel.send('You cannot play against yourself.');
+            else
+                msg.channel.send('You cannot start a game for other people.');
             return false;
         }
         return true;
@@ -104,7 +132,8 @@ class TicTacToe {
             users: [],
             pieces: [],
             board: [],
-            turn: 0
+            turn: 0,
+            move: []
         };
         if (Math.random() < .5)
             game.users.push(user1, user2);
@@ -119,32 +148,45 @@ class TicTacToe {
             for (let c = 0; c < MAXC; c++)
                 game.board[r].push(Piece.DEFAULT);
         }
-        servers.get(msg.guild.id).push(game);
-        printEmbed(msg, game);
+        msg.channel.send('Creating game, please wait.')
+            .then(message => {
+                message.react('🇦')
+                    .then(() => message.react('🇧'))
+                    .then(() => message.react('🇨'))
+                    .then(() => message.react('1⃣'))
+                    .then(() => message.react('2⃣'))
+                    .then(() => message.react('3⃣'))
+                    .then(() => message.react('❌'))
+                    .then(() => {
+                        game.message = message;
+                        printEmbed(game);
+                    });
+            });
+        Servers.get(msg.guild.id).push(game);
     }
 }
 
-const getCoords = loc => {
-    loc = loc.toLowerCase();
-    let r, c;
-    if (/^[a-c][1-3]$/g.test(loc)) {
-        r = loc.charCodeAt(1) - ASCII_VALUE.ONE;
-        c = loc.charCodeAt(0) - ASCII_VALUE.LOWERCASE_A;
-    } else if (/^[1-3][a-c]$/g.test(loc)) {
-        r = loc.charCodeAt(0) - ASCII_VALUE.ONE;
-        c = loc.charCodeAt(1) - ASCII_VALUE.LOWERCASE_A;
+const getType = emoji => {
+    switch (emoji) {
+        case '🇦': case '🇧': case '🇨': return 1;
+        case '1⃣': case '2⃣': case '3⃣': return 0;
+        default: return -1;
     }
-    return [r, c];
 };
 
-const removeGame = msg => {
-    const guild = msg.guild.id;
+const isUsersTurn = (game, userID) => {
+    const mentions = UserUtil.idToMentions(userID);
+    const cur = game.users[game.turn & 1]
+    return cur === mentions[0] || cur === mentions[1];
+};
+
+const removeGame = (guildID, userID) => {
     let x = 0;
-    const mentions = UserUtil.idToMentions(msg.author.id);
-    for (const server of servers.get(guild)) {
+    const mentions = UserUtil.idToMentions(userID);
+    for (const server of Servers.get(guildID)) {
         for (let a = 0; a < 2; a++)
             if (server.users[a] === mentions[0] || server.users[a] === mentions[1]) {
-                servers.get(guild).splice(x, 1);
+                Servers.get(guildID).splice(x, 1);
                 return;
             }
         x++;
@@ -174,21 +216,20 @@ const win = (game, r, c) => {
     return false;
 };
 
-const getGameByMention = (guild, mention) => {
-    if (!servers.has(guild))
+const getGameByMention = (guildID, mention) => {
+    if (!Servers.has(guildID))
         return undefined;
-    for (const server of servers.get(guild))
+    for (const server of Servers.get(guildID))
         if (server.users[0] === mention || server.users[1] === mention)
             return server;
     return undefined;
 };
 
-const getGame = msg => {
-    const guild = msg.guild.id;
-    if (!servers.has(guild))
+const getGame = (guildID, userID) => {
+    if (!Servers.has(guildID))
         return undefined;
-    const mentions = UserUtil.idToMentions(msg.author.id);
-    for (const game of servers.get(guild)) {
+    const mentions = UserUtil.idToMentions(userID);
+    for (const game of Servers.get(guildID)) {
         for (let a = 0; a < 2; a++)
             if (game.users[a] === mentions[0] || game.users[a] === mentions[1])
                 return game;
@@ -196,7 +237,7 @@ const getGame = msg => {
     return undefined;
 };
 
-const printEmbed = (msg, game) => {
+const printEmbed = game => {
     const getBoard = () => {
         let res = '', i = 0;
         for (const r of game.board) {
@@ -230,9 +271,9 @@ const printEmbed = (msg, game) => {
     const desc = getBoard() + lowerDesc();
     const embed = new Discord.RichEmbed()
         .setColor('AQUA')
-        .setTitle('Tic Tac Toe')
+        .setTitle('Game | Tic Tac Toe')
         .setDescription(desc);
-    msg.channel.send(embed);
+    game.message.edit(embed);
 };
 
 module.exports = TicTacToe;

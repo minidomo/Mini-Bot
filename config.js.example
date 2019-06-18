@@ -23,6 +23,11 @@ config.servers = {
     tictactoe: new Map()
 };
 
+// embed types
+config.embedTypes = {
+    Game: new Map()
+};
+
 // commands
 config.commands = new Map();
 

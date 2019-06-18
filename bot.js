@@ -27,8 +27,6 @@ for (const file of commandFiles) {
 config.embedTypes.Game
     .set('Tic Tac Toe', require('./games/tictactoe'))
     .set('Connect 4', require('./games/connect4'));
-//  .set('Test', require('./games/test'));
-
 client.on('ready', () => {
     logger.info(`Logged in as ${client.user.tag}!`);
     if (config.activity.name)
@@ -64,7 +62,18 @@ client.on('messageReactionAdd', (messageReaction, user) => {
     if (messageReaction.message.author.bot) {
         const ret = reactionHandler.check(messageReaction);
         if (ret.passed) {
-            const success = ret.handle(messageReaction, user);
+            const success = ret.handle(messageReaction, user, true);
+        }
+    }
+});
+
+client.on('messageReactionRemove', (messageReaction, user) => {
+    if (user.bot)
+        return;
+    if (messageReaction.message.author.bot) {
+        const ret = reactionHandler.check(messageReaction);
+        if (ret.passed) {
+            const success = ret.handle(messageReaction, user, false);
         }
     }
 });
@@ -84,7 +93,8 @@ const exiting = () => {
 
 process.on('SIGINT', exiting);
 process.on('SIGTERM', exiting);
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
     logger.error(err);
+    console.error(err);
     exiting();
 });

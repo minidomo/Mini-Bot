@@ -176,3 +176,8 @@
 
 #### June 15, 2019
 - Using the `help` command now has the appropriate title
+
+#### June 17, 2019
+- Tic Tac Toe now uses react emojis to control the game rather than typing commands
+  - `p` and `ff` sub-commands have been removed from `t`
+- Connect 4 and Tic Tac Toe now show the appropriate message when attempting to start a game with yourself

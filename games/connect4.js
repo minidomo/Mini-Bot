@@ -35,13 +35,13 @@ class Connect4 {
         removeGame(guildID, userID);
     }
 
-    static handleReaction(msgReaction, user) {
-        const emoji = msgReaction.emoji.name;
+    static handleReaction(reaction, user) {
+        const emoji = reaction.emoji.name;
         let status = false;
         if (Emojis.has(emoji)) {
             const column = Emojis.get(emoji);
             const userID = user.id;
-            const guildID = msgReaction.message.guild.id;
+            const guildID = reaction.message.guild.id;
             if (column >= 0) {
                 const obj = this.canPlace(guildID, userID, column);
                 if (status = obj.result)
@@ -51,7 +51,7 @@ class Connect4 {
                 if (status = this.canFF(guildID, userID))
                     this.ff(guildID, userID);
             }
-            msgReaction.remove(user);
+            reaction.remove(user);
         }
         return status;
     }
@@ -105,7 +105,10 @@ class Connect4 {
                 return false;
             }
         } else {
-            msg.channel.send('You cannot start a game for other people.');
+            if (author === u1 && author === u2)
+                msg.channel.send('You cannot play against yourself.');
+            else
+                msg.channel.send('You cannot start a game for other people.');
             return false;
         }
         return true;

@@ -29,13 +29,14 @@ class ReactionHandler {
  * 
  * @param {Discord.MessageReaction} messageReaction 
  * @param {Discord.User} user 
+ * @param {boolean} add
  * @returns {boolean}
  */
-const handleEmbed = (messageReaction, user) => {
+const handleEmbed = (messageReaction, user, add) => {
     const embed = messageReaction.message.embeds[0];
     const [type, title] = embed.title.split('|').map(val => val.trim());
     if (config.embedTypes[type] && config.embedTypes[type].has(title))
-        return config.embedTypes[type].get(title).handleReaction(messageReaction, user);
+        return config.embedTypes[type].get(title).handleReaction(messageReaction, user, add);
     return false;
 };
 
@@ -43,9 +44,10 @@ const handleEmbed = (messageReaction, user) => {
  * 
  * @param {Discord.MessageReaction} messageReaction 
  * @param {Discord.User} user 
+ * @param {boolean} add
  * @returns {boolean}
  */
-const handleMessage = (messageReaction, user) => {
+const handleMessage = (messageReaction, user, add) => {
     return false;
 };
 
