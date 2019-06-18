@@ -164,3 +164,20 @@
 #### June 12, 2019
 - Moved placement of process events to enable proper functionality
   - The bot will now disconnect from any voice channels when an uncaught exception occurs or is closed via `Ctrl + C`
+
+#### June 13, 2019
+- Searching via `search` or `play` now supports non-ASCII characters when utilizing the alternative method
+- Added `SIGTERM` event for exiting
+- `uncaughtException` event now prints out the error before exiting the program
+
+#### June 14, 2019
+- Connect 4 now uses react emojis to control the game rather than typing commands
+  - `p` and `ff` sub-commands have been removed from `c4`
+
+#### June 15, 2019
+- Using the `help` command now has the appropriate title
+
+#### June 17, 2019
+- Tic Tac Toe now uses react emojis to control the game rather than typing commands
+  - `p` and `ff` sub-commands have been removed from `t`
+- Connect 4 and Tic Tac Toe now show the appropriate message when attempting to start a game with yourself

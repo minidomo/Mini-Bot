@@ -1,11 +1,19 @@
 'use strict';
 
 const Discord = require('discord.js');
-const servers = require('../config').servers.connect4;
+const Servers = require('../config').servers.connect4;
 const UserUtil = require('../util/user');
-const MAXR = 7, MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
+const MAXC = 7, MAX_PLAYABLE_ROWS = 6, MAXTURNS = 42;
 const Piece = { RED: ':red_circle:', BLUE: ':large_blue_circle:', WHITE: ':white_circle:' };
-const KeyMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6 };
+const Emojis = new Map()
+    .set('🇦', 0)
+    .set('🇧', 1)
+    .set('🇨', 2)
+    .set('🇩', 3)
+    .set('🇪', 4)
+    .set('🇫', 5)
+    .set('🇬', 6)
+    .set('❌', -1);
 const Emotes = {
     WIN: [':stuck_out_tongue:', ':joy:', ':stuck_out_tongue_winking_eye:', ':sunglasses:', ':first_place:', ':kissing_heart:'],
     LOSE: [':thinking:', ':disappointed:', ':tired_face:', ':rage:', ':sob:', ':second_place:', ':interrobang:']
@@ -13,66 +21,64 @@ const Emotes = {
 
 // number & 1 === number % 2
 class Connect4 {
-    static canFF(msg) {
-        if (getGame(msg))
+    static canFF(guildID, userID) {
+        if (getGame(guildID, userID))
             return true;
-        msg.channel.send('You are not playing a Connect 4 game.');
         return false;
     }
 
-    static ff(msg) {
-        const game = getGame(msg);
-        const mentions = UserUtil.idToMentions(msg.author.id);
+    static ff(guildID, userID) {
+        const game = getGame(guildID, userID);
+        const mentions = UserUtil.idToMentions(userID);
         game.forfeit = Math.max(game.users.indexOf(mentions[0]), game.users.indexOf(mentions[1]));
-        printEmbed(msg, game);
-        removeGame(msg);
+        printEmbed(game);
+        removeGame(guildID, userID);
     }
 
-    static canPlace(msg, [col]) {
-        const game = getGame(msg);
-        if (!game) {
-            msg.channel.send('You are not playing a Connect 4 game.');
-            return false;
+    static handleReaction(reaction, user) {
+        const emoji = reaction.emoji.name;
+        let status = false;
+        if (Emojis.has(emoji)) {
+            const column = Emojis.get(emoji);
+            const userID = user.id;
+            const guildID = reaction.message.guild.id;
+            if (column >= 0) {
+                const obj = this.canPlace(guildID, userID, column);
+                if (status = obj.result)
+                    this.place(guildID, userID, obj.row, column);
+
+            } else {
+                if (status = this.canFF(guildID, userID))
+                    this.ff(guildID, userID);
+            }
+            reaction.remove(user);
         }
-        const isTurn = () => {
-            const mentions = UserUtil.idToMentions(msg.author.id);
-            const cur = game.users[game.turn & 1]
-            return cur === mentions[0] || cur === mentions[1];
-        };
-        if (!isTurn()) {
-            msg.channel.send('Is it not your turn.');
-            return false;
-        }
-        const letter = col.toLowerCase();
-        if (!/^[abcdefg]$/g.test(letter)) {
-            msg.channel.send('Invalid position.');
-            return false;
-        }
-        const c = KeyMap[letter];
-        for (let r = 0; r < MAX_PLAYABLE_ROWS; r++)
-            if (game.board[r][c] == Piece.WHITE)
-                return true;
-        msg.channel.send('Invalid position.');
-        return false;
+        return status;
     }
 
-    static place(msg, [col]) {
-        const game = getGame(msg);
-        const c = KeyMap[col.toLowerCase()];
-        let r = 0;
-        while (r < MAXR && game.board[r][c] === Piece.WHITE)
-            r++;
-        game.board[--r][c] = game.colors[game.turn & 1];
-        if (win(game, r, c)) {
+    static canPlace(guildID, userID, column) {
+        const game = getGame(guildID, userID);
+        if (game && isUsersTurn(game, userID)) {
+            for (let r = MAX_PLAYABLE_ROWS - 1; r >= 0; r--)
+                if (game.board[r][column] === Piece.WHITE)
+                    return { result: true, row: r };
+        }
+        return { result: false };
+    }
+
+    static place(guildID, userID, row, column) {
+        const game = getGame(guildID, userID);
+        game.board[row][column] = game.colors[game.turn & 1];
+        if (win(game, row, column)) {
             game.winner = game.turn & 1;
         } else {
             game.turn++;
             if (game.turn === MAXTURNS)
                 game.winner = 2;
         }
-        printEmbed(msg, game);
+        printEmbed(game);
         if ('winner' in game)
-            removeGame(msg);
+            removeGame(guildID, userID);
     }
 
     static canStart(msg, [user1, user2]) {
@@ -88,8 +94,8 @@ class Connect4 {
             return false;
         }
         const id = msg.guild.id;
-        if (!servers.has(id))
-            servers.set(id, []);
+        if (!Servers.has(id))
+            Servers.set(id, []);
         const author = msg.author.id;
         if ((author === u1 && author !== u2) || (author !== u1 && author === u2)) {
             const g1 = getGameByMention(id, user1);
@@ -99,7 +105,10 @@ class Connect4 {
                 return false;
             }
         } else {
-            msg.channel.send('You cannot start a game for other people.');
+            if (author === u1 && author === u2)
+                msg.channel.send('You cannot play against yourself.');
+            else
+                msg.channel.send('You cannot start a game for other people.');
             return false;
         }
         return true;
@@ -128,19 +137,38 @@ class Connect4 {
         game.board.push([]);
         for (const c of 'abcdefg')
             game.board[MAX_PLAYABLE_ROWS].push(`:regional_indicator_${c}:`);
-        servers.get(msg.guild.id).push(game);
-        printEmbed(msg, game);
+        msg.channel.send('Creating game, please wait.')
+            .then(message => {
+                message.react('🇦')
+                    .then(() => message.react('🇧'))
+                    .then(() => message.react('🇨'))
+                    .then(() => message.react('🇩'))
+                    .then(() => message.react('🇪'))
+                    .then(() => message.react('🇫'))
+                    .then(() => message.react('🇬'))
+                    .then(() => message.react('❌'))
+                    .then(() => {
+                        game.message = message;
+                        printEmbed(game);
+                    });
+            });
+        Servers.get(msg.guild.id).push(game);
     }
 }
 
-const removeGame = msg => {
-    const guild = msg.guild.id;
+const isUsersTurn = (game, userID) => {
+    const mentions = UserUtil.idToMentions(userID);
+    const cur = game.users[game.turn & 1]
+    return cur === mentions[0] || cur === mentions[1];
+};
+
+const removeGame = (guildID, userID) => {
     let x = 0;
-    const mentions = UserUtil.idToMentions(msg.author.id);
-    for (const server of servers.get(guild)) {
+    const mentions = UserUtil.idToMentions(userID);
+    for (const server of Servers.get(guildID)) {
         for (let a = 0; a < 2; a++)
             if (server.users[a] === mentions[0] || server.users[a] === mentions[1]) {
-                servers.get(guild).splice(x, 1);
+                Servers.get(guildID).splice(x, 1);
                 return;
             }
         x++;
@@ -170,21 +198,20 @@ const win = (game, r, c) => {
     return false;
 };
 
-const getGameByMention = (guild, mention) => {
-    if (!servers.has(guild))
+const getGameByMention = (guildID, mention) => {
+    if (!Servers.has(guildID))
         return undefined;
-    for (const server of servers.get(guild))
+    for (const server of Servers.get(guildID))
         if (server.users[0] === mention || server.users[1] === mention)
             return server;
     return undefined;
 };
 
-const getGame = msg => {
-    const guild = msg.guild.id;
-    if (!servers.has(guild))
+const getGame = (guildID, userID) => {
+    if (!Servers.has(guildID))
         return undefined;
-    const mentions = UserUtil.idToMentions(msg.author.id);
-    for (const game of servers.get(guild)) {
+    const mentions = UserUtil.idToMentions(userID);
+    for (const game of Servers.get(guildID)) {
         for (let a = 0; a < 2; a++)
             if (game.users[a] === mentions[0] || game.users[a] === mentions[1])
                 return game;
@@ -192,7 +219,7 @@ const getGame = msg => {
     return undefined;
 };
 
-const printEmbed = (msg, game) => {
+const printEmbed = game => {
     const getBoard = () => {
         let res = '';
         for (const r of game.board) {
@@ -210,21 +237,21 @@ const printEmbed = (msg, game) => {
                     \n${game.users[1]} ${game.colors[1]} ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
             else
                 res += `${game.users[game.winner]} ${game.colors[game.winner]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}
-                    \n\n${game.users[game.winner + 1 & 1]} ${game.colors[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
+                    \n${game.users[game.winner + 1 & 1]} ${game.colors[game.winner + 1 & 1]} loses! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}`;
         } else if (typeof game.forfeit !== 'undefined') {
             res += `${game.users[game.forfeit]} ${game.colors[game.forfeit]} surrenders! ${Emotes.LOSE[Math.floor(Math.random() * Emotes.LOSE.length)]}
-                \n\n${game.users[game.forfeit + 1 & 1]} ${game.colors[game.forfeit + 1 & 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
+                \n${game.users[game.forfeit + 1 & 1]} ${game.colors[game.forfeit + 1 & 1]} wins! ${Emotes.WIN[Math.floor(Math.random() * Emotes.WIN.length)]}`;
         } else
             res += `${game.users[0]} ${game.colors[0]} vs ${game.users[1]} ${game.colors[1]}
-                \n\n${game.users[game.turn & 1]}'s Move`;
+                \n${game.users[game.turn & 1]}'s Move`;
         return res;
     };
     const desc = getBoard() + lowerDesc();
     const embed = new Discord.RichEmbed()
         .setColor('AQUA')
-        .setTitle('Connect 4')
+        .setTitle('Game | Connect 4')
         .setDescription(desc);
-    msg.channel.send(embed);
+    game.message.edit(embed);
 };
 
 module.exports = Connect4;
