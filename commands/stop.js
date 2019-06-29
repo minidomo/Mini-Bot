@@ -26,6 +26,7 @@ module.exports = {
         server.queue = [];
         if (msg.guild.voiceConnection.dispatcher)
             msg.guild.voiceConnection.dispatcher.end();
-        msg.guild.voiceConnection.disconnect();
+        if (msg.guild.voiceConnection)
+            msg.guild.voiceConnection.disconnect();
     }
 };
