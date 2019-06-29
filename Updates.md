@@ -185,3 +185,6 @@
 #### June 18, 2019
 - Fixed `config.js.example` template
 - Added jsdocs for `reaction.js`
+
+#### June 29, 2019
+- Fixed an issue where if the bot was manually disconnected from a channel, using `stop` would crash the bot
