@@ -188,3 +188,6 @@
 
 #### June 29, 2019
 - Fixed an issue where if the bot was manually disconnected from a channel, using `stop` would crash the bot
+
+#### June 30, 2019
+- Better checking for the prefix (for non-letter, non-digit, non-whitespace, `_`)

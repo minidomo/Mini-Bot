@@ -38,8 +38,11 @@ client.on('message', msg => {
     mainHandler.log(msg, LOG_TYPE.NEW);
     if (!msg.author.bot)
         if (msg.content.startsWith(config.prefix)) {
-            const obj = commandHandler.getArguments(msg.content);
-            const success = commandHandler.handle(msg, obj);
+            const match = /^([^\w\d\s]+)/.exec(msg.content);
+            if (match[1] === config.prefix) {
+                const obj = commandHandler.getArguments(msg.content);
+                const success = commandHandler.handle(msg, obj);
+            }
         } else {
             mainHandler.handleFeature(msg);
         }
