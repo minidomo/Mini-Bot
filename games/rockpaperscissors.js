@@ -42,7 +42,7 @@ class RockPaperScissors {
                 while (decideMatch(p1, p2) !== 1)
                     p1 = chooseRandom();
             } else {
-                while (decideMatch(p1, p2) !== 1)
+                while (decideMatch(p1, p2) !== 0)
                     p2 = chooseRandom();
             }
         }
