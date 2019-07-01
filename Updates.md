@@ -191,3 +191,6 @@
 
 #### June 30, 2019
 - Better checking for the prefix (for non-letter, non-digit, non-whitespace, `_`)
+
+#### July 1, 2019
+- Using the `move` command now says the correct new position

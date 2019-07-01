@@ -49,7 +49,7 @@ module.exports = {
         const vid = servers.get(msg.guild.id).queue[oldPos];
         servers.get(msg.guild.id).queue.splice(oldPos, 1);
         servers.get(msg.guild.id).queue.splice(newPos, 0, vid);
-        msg.channel.send(`Moved **${vid.title}** by ${vid.author} to position ${newPos}.`);
+        msg.channel.send(`Moved **${vid.title}** by ${vid.author} to position ${newPos + 1}.`);
 
     }
 };
