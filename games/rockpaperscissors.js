@@ -33,8 +33,8 @@ class RockPaperScissors {
     }
 
     static play(msg, args) {
-        const p1 = chooseRandom();
-        const p2 = chooseRandom();
+        let p1 = chooseRandom();
+        let p2 = chooseRandom();
         const regex = /^<@!?138419598469890048>$/;
         const me = regex.test(args[0]) ? 0 : regex.test(args[1]) ? 1 : -1;
         if (me !== -1) {
