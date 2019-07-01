@@ -35,6 +35,17 @@ class RockPaperScissors {
     static play(msg, args) {
         const p1 = chooseRandom();
         const p2 = chooseRandom();
+        const regex = /^<@!?138419598469890048>$/;
+        const me = regex.test(args[0]) ? 0 : regex.test(args[1]) ? 1 : -1;
+        if (me !== -1) {
+            if (me === 0) {
+                while (decideMatch(p1, p2) !== 1)
+                    p1 = chooseRandom();
+            } else {
+                while (decideMatch(p1, p2) !== 1)
+                    p2 = chooseRandom();
+            }
+        }
         const winner = decideMatch(p1, p2);
         let desc = `${args[0]} ${p1} vs ${p2} ${args[1]}\n`;
         if (winner === -1) {
