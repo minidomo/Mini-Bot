@@ -39,10 +39,10 @@ class RockPaperScissors {
         const me = regex.test(args[0]) ? 0 : regex.test(args[1]) ? 1 : -1;
         if (me !== -1) {
             if (me === 0) {
-                while (decideMatch(p1, p2) !== 1)
+                while (decideMatch(p1, p2) === 1)
                     p1 = chooseRandom();
             } else {
-                while (decideMatch(p1, p2) !== 0)
+                while (decideMatch(p1, p2) === 0)
                     p2 = chooseRandom();
             }
         }
