@@ -194,3 +194,6 @@
 
 #### July 1, 2019
 - Using the `move` command now says the correct new position
+
+#### July 3, 2019
+- The `help` command now appears when using `help`
