@@ -1,4 +1,4 @@
-# Mini Bot (Work-In-Progress)  
+# Mini Bot
 Discord bot for my friend's server.  
 Made with [Node.js](https://nodejs.org/en/).  
 See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Installation.md) to install the bot.  

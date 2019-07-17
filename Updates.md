@@ -181,3 +181,23 @@
 - Tic Tac Toe now uses react emojis to control the game rather than typing commands
   - `p` and `ff` sub-commands have been removed from `t`
 - Connect 4 and Tic Tac Toe now show the appropriate message when attempting to start a game with yourself
+
+#### June 18, 2019
+- Fixed `config.js.example` template
+- Added jsdocs for `reaction.js`
+
+#### June 29, 2019
+- Fixed an issue where if the bot was manually disconnected from a channel, using `stop` would crash the bot
+
+#### June 30, 2019
+- Better checking for the prefix (for non-letter, non-digit, non-whitespace, `_`)
+
+#### July 1, 2019
+- Using the `move` command now says the correct new position
+
+#### July 3, 2019
+- The `help` command now appears when using `help`
+
+#### July 17, 2019
+- Added `moment` for logging
+- Addressed `lodash` vulnerability

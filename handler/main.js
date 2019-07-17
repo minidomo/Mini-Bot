@@ -1,6 +1,7 @@
 'use strict';
 
 const Discord = require('discord.js');
+const moment = require('moment');
 
 // load active extensions
 const fs = require('fs');
@@ -22,7 +23,7 @@ class MainHandler {
      * @param {number} type the type of message being sent 
      */
     static log(msg, type) {
-        let res = `[${msg.createdAt.toTimeString().substr(0, 8)}] [${msg.guild.name} | ${msg.channel.name}]: <${msg.author.tag}>`;
+        let res = `[${moment().format('hh:mm:ss A')}] [${msg.guild.name} | ${msg.channel.name}]: <${msg.author.tag}>`;
         if (type === LOG_TYPE.EDITED)
             res += ' [EDIT]';
         else if (type === LOG_TYPE.DELETED)
