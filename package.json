@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test\\bot"
   },
   "author": "minidomo",
   "license": "ISC",
@@ -11,6 +11,7 @@
     "axios": ">=0.19.0",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.5.1",
+    "moment": "^2.24.0",
     "opusscript": "0.0.6",
     "winston": "^3.2.1",
     "youtube-search": "^1.1.4",

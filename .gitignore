@@ -1,3 +1,4 @@
 config.js
 node_modules/
 chatlogs/*.log
+test/

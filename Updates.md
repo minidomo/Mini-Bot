@@ -197,3 +197,7 @@
 
 #### July 3, 2019
 - The `help` command now appears when using `help`
+
+#### July 17, 2019
+- Added `moment` for logging
+- Addressed `lodash` vulnerability
