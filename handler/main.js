@@ -23,7 +23,7 @@ class MainHandler {
      * @param {number} type the type of message being sent 
      */
     static log(msg, type) {
-        let res = `[${moment().subtract(5, 'hours').format('hh:mm:ss A')}] [${msg.guild.name} | ${msg.channel.name}]: <${msg.author.tag}>`;
+        let res = `[${moment().format('hh:mm:ss A')}] [${msg.guild.name} | ${msg.channel.name}]: <${msg.author.tag}>`;
         if (type === LOG_TYPE.EDITED)
             res += ' [EDIT]';
         else if (type === LOG_TYPE.DELETED)
