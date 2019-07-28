@@ -1,1 +1,0 @@
-This file is simply to allow the folder, `chatlogs`, to be in the git repository due to `.log` files being ignored in `.gitignore`

@@ -1,5 +1,7 @@
 # Mini Bot
-Discord bot for my friend's server.  
-Made with [Node.js](https://nodejs.org/en/).  
-See my [Installation Guide](https://github.com/MiniDomo/Mini-Bot/blob/master/Installation.md) to install the bot.  
-Updates to the bot can be seen [here](https://github.com/MiniDomo/Mini-Bot/blob/master/Updates.md).
+Mini Bot is a music bot that features playlists. Users can create playlists through this bot and can be saved and played at any time.
+
+**Previous Versions**  
+Previous versions of Mini Bot are no longer being developed or maintained.
+- [2.0.0](https://github.com/MiniDomo/Mini-Bot/tree/2.0.0)
+- [1.0.0](https://github.com/MiniDomo/Mini-Bot/tree/1.0.0)

@@ -1,24 +1,24 @@
 {
   "name": "mini-bot",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "description": "",
   "main": "bot.js",
   "scripts": {
-    "test": "node test\\bot"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "minidomo",
+  "author": "JB Ladera",
   "license": "ISC",
   "dependencies": {
-    "axios": ">=0.19.0",
     "bufferutil": "^4.0.1",
-    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
     "libsodium-wrappers": "^0.7.5",
     "moment": "^2.24.0",
     "opusscript": "0.0.6",
     "winston": "^3.2.1",
+    "youtube-playlist": "^1.0.2",
     "youtube-search": "^1.1.4",
-    "ytdl-core": "^0.29.2"
-  },
-  "devDependencies": {},
-  "description": ""
+    "yt-search": "^0.4.1",
+    "ytdl-core": "^0.29.3"
+  }
 }

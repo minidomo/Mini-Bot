@@ -1,4 +1,4 @@
-config.js
 node_modules/
-chatlogs/*.log
-test/
+.env
+settings.json
+planning.md
