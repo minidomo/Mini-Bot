@@ -74,7 +74,8 @@ class SongCollection {
      * @param {string} id 
      */
     async addId(id) {
-        id = Youtube.ytdl.getVideoID(id);
+        if (!Youtube.ytdl.validateID(id))
+            id = Youtube.ytdl.getVideoID(id);
         if (id instanceof Error)
             return false;
         let song;
@@ -87,12 +88,14 @@ class SongCollection {
             } catch (err) {
                 return false;
             }
+            console.log(`${vidinfo.player_response.videoDetails.title} ${vidinfo.author.name} ${vidinfo.length_seconds} ${vidinfo.video_id}`);
             song = new Song({
-                title: vidinfo.title,
-                author: vidinfo.author.name,
-                duration: Transform.secToHHMMSS(vidinfo.length_seconds),
-                id: vidinfo.video_id
+                title: vidinfo.player_response.videoDetails.title,
+                author: vidinfo.player_response.videoDetails.author,
+                duration: Transform.secToHHMMSS(vidinfo.player_response.videoDetails.lengthSeconds),
+                id: vidinfo.player_response.videoDetails.videoId
             });
+            console.log(song);
             SongCache.set(song.id, song);
         }
         if (this.has(song))

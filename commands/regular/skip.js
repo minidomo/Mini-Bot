@@ -21,19 +21,19 @@ module.exports = {
             Message.botMustBeInVoiceChannel(msg);
             return false;
         }
+        if (!voiceConnection.dispatcher) {
+            Message.botMustBePlayingAudio(msg);
+            return false;
+        }
         return true;
     },
     execute(msg) {
         const queue = Settings.get(msg.guild.id).queue;
         let description = '';
-        if (queue.size() === 0)
-            description = 'Skipping nothing ¯\\\_(ツ)\_/¯';
-        else {
-            const vid = queue.first();
-            description = `Skipping [${vid.title}](${Youtube.url.video(vid.id)}) by ${vid.author} \`${vid.duration}\``;
-            const voiceConnection = client.voiceConnections.get(msg.guild.id);
-            voiceConnection.dispatcher.end();
-        }
+        const vid = queue.first();
+        description = `Skipping [${vid.title}](${Youtube.url.video(vid.id)}) by ${vid.author} \`${vid.duration}\``;
+        const voiceConnection = client.voiceConnections.get(msg.guild.id);
+        voiceConnection.dispatcher.end();
         const embed = new Discord.RichEmbed()
             .setColor(Hex.generate(true))
             .setDescription(description);
