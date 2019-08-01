@@ -1,6 +1,6 @@
 import Song from './Song';
 import SongCache from './SongCache';
-import ytdl from 'ytdl-core';
+import Youtube from '../util/Youtube';
 import Transform from '../util/Transform';
 
 const { object: songCache } = SongCache;
@@ -55,10 +55,11 @@ class SongCollection {
         this.list.push(song);
         return this;
     }
+
     async addId(val: string) {
         let id = val;
-        if (!ytdl.validateID(val)) {
-            const res = ytdl.getVideoID(val);
+        if (!Youtube.ytdl.validateID(val)) {
+            const res = Youtube.ytdl.getVideoID(val);
             if (res instanceof Error)
                 return false;
             id = res;
@@ -67,7 +68,7 @@ class SongCollection {
         if (!song) {
             let vidinfo;
             try {
-                vidinfo = await ytdl.getBasicInfo(id);
+                vidinfo = await Youtube.ytdl.getBasicInfo(id);
             } catch (err) {
                 return false;
             }
@@ -86,6 +87,10 @@ class SongCollection {
         return true;
     }
 
+    async addInput(input: string[]) {
+        return await this.modify(input, true);
+    }
+
     remove(val: Song | number) {
         let index = val instanceof Song ? this.index(val) : val;
         if (index >= 0 && index < this.list.length) {
@@ -99,14 +104,14 @@ class SongCollection {
     }
 
     async removeId(val: string) {
-        let id = ytdl.getVideoID(val);
+        let id = Youtube.ytdl.getVideoID(val);
         if (id instanceof Error)
             return false;
         let song = songCache.get(id);
         if (!song) {
             let vidinfo;
             try {
-                vidinfo = await ytdl.getBasicInfo(val);
+                vidinfo = await Youtube.ytdl.getBasicInfo(val);
             } catch (err) {
                 return false;
             }
@@ -124,6 +129,43 @@ class SongCollection {
             return true;
         }
         return false;
+    }
+
+    async removeInput(input: string[]) {
+        return await this.modify(input, false);
+    }
+
+    async modify(input: string[], add: boolean) {
+        let count = 0;
+        const func = add ? this.addId.bind(this) : this.removeId.bind(this);
+        for (const elem of input) {
+            const validId = Youtube.ytdl.validateID(elem);
+            const possibleUrl = Transform.ensureFormatUrl(elem);
+            if (validId || Youtube.ytdl.validateURL(possibleUrl)) {
+                if (await func(validId ? elem : possibleUrl))
+                    count++;
+                else if (validId) {
+                    const [vid] = await Youtube.search(elem, 1);
+                    if (await func(vid.id!))
+                        count++;
+                }
+            } else if (Youtube.url.PLAYLIST_VALID_REGEX.test(possibleUrl)) {
+                const match = Youtube.url.PLAYLIST_PARSE_REGEX.exec(possibleUrl);
+                if (match && match[1]) {
+                    const res = Youtube.url.playlist(match[1]);
+                    const { data } = await Youtube.ytplaylist(res, 'id');
+                    for (const id of data.playlist)
+                        if (await func(id as string))
+                            count++;
+                }
+            } else {
+                const vids = await Youtube.search(elem, 1);
+                for (const song of vids)
+                    if (await func(song.id!))
+                        count++;
+            }
+        }
+        return count;
     }
 
     has(song: Song) {

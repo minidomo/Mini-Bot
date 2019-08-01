@@ -26,7 +26,7 @@ export default {
         const queue = settings.get(msg.guild.id).queue;
         if (args.length === 0) {
             if (queue.size() > 0)
-                Util.Youtube.play(Client, settings, msg.guild.id, msg.channel.id);
+                Util.Youtube.play(settings, msg.guild.id, msg.channel.id);
         } else {
             let added = 0;
             const playlists = settings.get(msg.guild.id).playlists;
@@ -42,7 +42,7 @@ export default {
                 });
             }
             if (queue.size() > 0)
-                Util.Youtube.play(Client, settings, msg.guild.id, msg.channel.id);
+                Util.Youtube.play(settings, msg.guild.id, msg.channel.id);
             const description = `Added ${added} song(s)`;
             const embed = new Discord.RichEmbed()
                 .setColor(Util.Hex.generateNumber())

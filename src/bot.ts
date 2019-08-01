@@ -2,17 +2,17 @@ import './structs/Client';
 import './structs/Song';
 import './structs/SongCache';
 import './util/Transform';
+import './util/Logger';
+import './util/Hex';
+import './util/Youtube';
 import './structs/SongCollection';
 import './structs/PlaylistManager';
 import './structs/GuildSettings';
 import './structs/Settings';
 import './structs/Structs';
 
-import './util/Logger';
 import './util/Message';
-import './util/Hex';
 import './util/Emotes';
-import './util/Youtube';
 import './util/Util';
 
 import './listeners/ready';

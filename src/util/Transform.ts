@@ -18,5 +18,10 @@ export default {
         if (trimmed.length > limit)
             return trimmed.substr(0, limit - 3).trimRight() + '...';
         return trimmed;
+    },
+    ensureFormatUrl(url: string) {
+        if (url.startsWith('<') && url.endsWith('>'))
+            return url.substring(1, url.length - 1);
+        return url;
     }
 };

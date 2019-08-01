@@ -35,32 +35,7 @@ export default {
                 }
             });
         } else {
-            for (const elem of rest) {
-                const validId = Util.Youtube.ytdl.validateID(elem);
-                if (Util.Youtube.ytdl.validateID(elem) || Util.Youtube.ytdl.validateURL(elem)) {
-                    if (await playlist.removeId(elem))
-                        count++;
-                    else if (validId) {
-                        const [vid] = await Util.Youtube.search(elem, 1);
-                        if (await playlist.removeId(vid.id!))
-                            count++;
-                    }
-                } else if (Util.Youtube.url.PLAYLIST_REGEX.test(elem)) {
-                    const match = Util.Youtube.url.PLAYLIST_REGEX.exec(elem);
-                    if (match && match[1]) {
-                        const res = Util.Youtube.url.playlist(match[1]);
-                        const { data } = await Util.Youtube.ytplaylist(res, 'id');
-                        for (const id of data.playlist)
-                            if (await playlist.removeId(id as string))
-                                count++;
-                    }
-                } else {
-                    const vids = await Util.Youtube.search(elem, 1);
-                    for (const song of vids)
-                        if (await playlist.addId(song.id!))
-                            count++;
-                }
-            }
+            count = await playlist.removeInput(rest);
         }
         message.edit(`Removed ${count} song(s) from the playist, \`${name}\``);
     }

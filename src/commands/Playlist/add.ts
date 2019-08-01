@@ -35,32 +35,7 @@ export default {
                 }
             });
         } else {
-            for (const elem of rest) {
-                const validId = Util.Youtube.ytdl.validateID(elem);
-                if (validId || Util.Youtube.ytdl.validateURL(elem)) {
-                    if (await playlist.addId(elem))
-                        count++;
-                    else if (validId) {
-                        const [vid] = await Util.Youtube.search(elem, 1);
-                        if (await playlist.addId(vid.id!))
-                            count++;
-                    }
-                } else if (Util.Youtube.url.PLAYLIST_REGEX.test(elem)) {
-                    const match = Util.Youtube.url.PLAYLIST_REGEX.exec(elem);
-                    if (match && match[1]) {
-                        const res = Util.Youtube.url.playlist(match[1]);
-                        const { data } = await Util.Youtube.ytplaylist(res, 'id');
-                        for (const id of data.playlist)
-                            if (await playlist.addId(id as string))
-                                count++;
-                    }
-                } else {
-                    const vids = await Util.Youtube.search(elem, 1);
-                    for (const song of vids)
-                        if (await playlist.addId(song.id!))
-                            count++;
-                }
-            }
+            count = await playlist.addInput(rest);
         }
         message.edit(`Added ${count} song(s) to the playist, \`${name}\``);
     }
