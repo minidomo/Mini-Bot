@@ -1,7 +1,7 @@
 {
-  "name": "mini",
+  "name": "mini-bot",
   "version": "3.0.0",
-  "description": "",
+  "description": "Mini Bot is a music bot that features playlists. Users can create playlists through this bot and can be saved and played at any time.",
   "main": "dist/bot.js",
   "scripts": {
     "build": "tsc",
@@ -18,7 +18,10 @@
     "youtube-playlist": "^1.0.2",
     "youtube-search": "^1.1.4",
     "yt-search": "^0.4.1",
-    "ytdl-core": "^0.29.4"
+    "ytdl-core": "^0.29.4",
+    "bufferutil": "^4.0.1",
+    "libsodium-wrappers": "^0.7.5",
+    "opusscript": "0.0.6"
   },
   "devDependencies": {
     "typescript": "^3.5.3"
@@ -27,5 +30,13 @@
     "bufferutil": "^4.0.1",
     "libsodium-wrappers": "^0.7.5",
     "opusscript": "0.0.6"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiniDomo/Mini-Bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MiniDomo/Mini-Bot/issues"
+  },
+  "homepage": "https://github.com/MiniDomo/Mini-Bot#readme"
 }
