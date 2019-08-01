@@ -1,0 +1,1 @@
+This is where the bot will store settings and songcache in `settings.json` and `songcache.json` respectively.
