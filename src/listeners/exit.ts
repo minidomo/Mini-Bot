@@ -1,7 +1,8 @@
-import Logger from '../util/Logger';
-import SongCache from '../structs/SongCache';
-import Settings from '../structs/Settings';
-import Client from '../structs/Client';
+import Logger = require('../util/Logger');
+import SongCache = require('../structs/SongCache');
+import Settings = require('../structs/Settings');
+import Client = require('../structs/Client');
+import Arguments = require('../structs/Arguments');
 
 const { object: songCache } = SongCache;
 const { object: settings } = Settings;
@@ -13,7 +14,7 @@ const EXIT = async (err?: any) => {
         Logger.error(err);
     if (!entered) {
         entered = true;
-        if (songCache.loaded) {
+        if (Arguments.saveSongCache && songCache.loaded) {
             Logger.info('Saving songcache.json...');
             songCache.save();
             Logger.info('Successfully saved songcache.json');
@@ -24,11 +25,13 @@ const EXIT = async (err?: any) => {
             Logger.info('Successfully saved settings.json');
         }
     }
-    Client.voiceConnections.keyArray().forEach(guildId => {
-        const guild = Client.guilds.get(guildId)!;
-        Logger.info(`Disconnecting from ${guild.name} (${guild.id})`);
-        Client.voiceConnections.get(guild.id)!.disconnect();
-    });
+    if (Client.voice) {
+        Client.voice.connections.keyArray().forEach(guildId => {
+            const guild = Client.guilds.get(guildId)!;
+            Logger.info(`Disconnecting from ${guild.name} (${guild.id})`);
+            Client.voice!.connections.get(guild.id)!.disconnect();
+        });
+    }
     Logger.info('Shutting down...');
     process.exit();
 };

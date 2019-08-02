@@ -1,10 +1,10 @@
-import PlaylistManager from './PlaylistManager';
-import SongCollection from './SongCollection';
+import PlaylistManager = require('./PlaylistManager');
+import Queue = require('./Queue');
 
 class GuildSettings {
     name: string | undefined;
     prefix: string;
-    queue: SongCollection;
+    queue: Queue;
     playlists: PlaylistManager;
 
     constructor(
@@ -18,7 +18,7 @@ class GuildSettings {
     ) {
         this.name = data.name;
         this.prefix = data.prefix || '!!';
-        this.queue = new SongCollection(data.queue);
+        this.queue = new Queue(data.queue);
         this.playlists = new PlaylistManager(data.playlists);
     }
 
@@ -39,4 +39,4 @@ class GuildSettings {
     }
 }
 
-export default GuildSettings;
+export = GuildSettings;

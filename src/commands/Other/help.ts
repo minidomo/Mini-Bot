@@ -1,11 +1,11 @@
-import Discord from 'discord.js';
-import Settings from '../../structs/Settings';
-import Util from '../../util/Util';
-import fs from 'fs';
+import Discord = require('discord.js');
+import Settings = require('../../structs/Settings');
+import Util = require('../../util/Util');
+import fs = require('fs');
 
-const embed = new Discord.RichEmbed();
+const embed = new Discord.MessageEmbed();
 
-export default {
+export = {
     name: 'help',
     description: 'Shows available commands.',
     usage: 'help',
@@ -14,7 +14,7 @@ export default {
     },
     execute(msg: Discord.Message) {
         embed.setColor(Util.Hex.generateNumber())
-            .setTitle(`Commands | Prefix: ${Settings.object.get(msg.guild.id).prefix}`);
+            .setTitle(`Commands | Prefix: ${Settings.object.get(msg.guild!.id).prefix}`);
         msg.channel.send(embed);
     },
     load(commands: Map<string, any>) {

@@ -1,7 +1,7 @@
-import Song from './Song';
-import SongCache from './SongCache';
-import Youtube from '../util/Youtube';
-import Transform from '../util/Transform';
+import Song = require('./Song');
+import SongCache = require('./SongCache');
+import Youtube = require('../util/Youtube');
+import Transform = require('../util/Transform');
 
 const { object: songCache } = SongCache;
 
@@ -194,4 +194,4 @@ class SongCollection {
     }
 }
 
-export default SongCollection;
+export = SongCollection;

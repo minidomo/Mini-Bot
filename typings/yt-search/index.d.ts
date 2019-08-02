@@ -19,5 +19,5 @@ declare module 'yt-search' {
         cb: (err: Error, result?: ytsearch.Result) => void
     ): void;
 
-    export default ytSearch;
+    export = ytSearch;
 }

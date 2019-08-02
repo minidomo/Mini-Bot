@@ -1,10 +1,10 @@
-import Discord from 'discord.js';
-import Settings from '../../structs/Settings';
-import Util from '../../util/Util';
+import Discord = require('discord.js');
+import Settings = require('../../structs/Settings');
+import Util = require('../../util/Util');
 
 const { object: settings } = Settings;
 
-export default {
+export = {
     name: 'delete',
     description: 'Delete playlists.',
     usage: 'delete <names>',
@@ -16,7 +16,7 @@ export default {
         return true;
     },
     execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
-        const playlists = settings.get(msg.guild.id).playlists;
+        const playlists = settings.get(msg.guild!.id).playlists;
         let count = 0, description = '';
         for (const name of args) {
             if (!playlists.has(name))
@@ -25,7 +25,7 @@ export default {
             description += name + '\n';
             count++;
         }
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
             .setColor(Util.Hex.generateNumber())
             .setTitle(`${count} Playlist(s) Deleted`)
             .setDescription(description);

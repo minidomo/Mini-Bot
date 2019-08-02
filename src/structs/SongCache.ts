@@ -1,7 +1,7 @@
-import Song from './Song';
-import Settings from './Settings';
-import GuildSettings from './GuildSettings';
-import fs from 'fs';
+import Song = require('./Song');
+import Settings = require('./Settings');
+import GuildSettings = require('./GuildSettings');
+import fs = require('fs');
 
 class SongCache extends Map<string, Song>{
     static object: SongCache;
@@ -45,4 +45,4 @@ class SongCache extends Map<string, Song>{
 
 SongCache.object = new SongCache();
 
-export default SongCache;
+export = SongCache;

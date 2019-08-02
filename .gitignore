@@ -3,3 +3,4 @@ node_modules/
 planning.md
 dist/
 save/*.json
+save/songs/*.mp3

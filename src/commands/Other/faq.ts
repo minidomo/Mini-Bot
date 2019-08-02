@@ -1,9 +1,9 @@
-import Discord from 'discord.js';
-import Hex from '../../util/Hex';
+import Discord = require('discord.js');
+import Hex = require('../../util/Hex');
 
-const embed = new Discord.RichEmbed().setTitle(`Frequently Asked Questions`);
+const embed = new Discord.MessageEmbed().setTitle(`Frequently Asked Questions`);
 
-export default {
+export = {
     name: 'faq',
     description: 'Frequently Asked Questions.',
     usage: 'faq',

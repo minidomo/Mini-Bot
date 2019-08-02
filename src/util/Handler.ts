@@ -1,18 +1,18 @@
-import Discord from 'discord.js';
-import Settings from '../structs/Settings';
-import Commands from '../commands/commands';
-import Client from '../structs/Client';
+import Discord = require('discord.js');
+import Settings = require('../structs/Settings');
+import Commands = require('../commands/commands');
+import Client = require('../structs/Client');
 
 const mention_regex = /^(<@!?(\d+)>)/;
 const prefix_regex = /^([^\w\d\s]+)/;
 
-export default {
+export = {
     getArgs(content: string | string[], guildId: string) {
         if (typeof content === 'string') {
             const mentionMatch = mention_regex.exec(content);
             const prefix = Settings.object.get(guildId).prefix;
             const prefixMatch = prefix_regex.exec(content);
-            if (prefixMatch && prefixMatch[1] === prefix || mentionMatch && mentionMatch[1] && mentionMatch[2] === Client.user.id) {
+            if (prefixMatch && prefixMatch[1] === prefix || mentionMatch && mentionMatch[1] && mentionMatch[2] === Client.user!.id) {
                 let pre = content.substr(mentionMatch ? mentionMatch[1].length : prefix.length).trimLeft().split(/\s+/g);
                 const fixed = pre.join(' ');
                 const parsed = fixed.match(/("[^"]*"|[^\s]+)/g);

@@ -1,7 +1,7 @@
-import GuildSettings from './GuildSettings';
-import Client from './Client';
-import { Logger } from 'winston';
-import fs from 'fs';
+import GuildSettings = require('./GuildSettings');
+import Client = require('./Client');
+import winston = require('winston');
+import fs = require('fs');
 
 class Settings extends Map<string, GuildSettings> {
     static object: Settings;
@@ -16,7 +16,7 @@ class Settings extends Map<string, GuildSettings> {
         return super.get(id)!;
     }
 
-    load(Logger: Logger) {
+    load(Logger: winston.Logger) {
         const raw = fs.readFileSync(`${__dirname}/../../save/settings.json`, { encoding: 'utf8' });
         const content: { [key: string]: any } = raw ? JSON.parse(raw) as {} : {};
         const rest = new Set(Object.keys(content));
@@ -53,4 +53,4 @@ class Settings extends Map<string, GuildSettings> {
 
 Settings.object = new Settings();
 
-export default Settings;
+export = Settings;

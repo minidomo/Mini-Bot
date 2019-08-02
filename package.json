@@ -5,20 +5,23 @@
   "main": "dist/bot.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node -r dotenv/config .",
+    "start": "npm run build && node -r dotenv/config . --saveMp3 --saveSongCache",
+    "start:prod": "npm run build && node -r dotenv/config . -p --saveMp3 --saveSongCache",
     "clean": "rm -rf dist/"
   },
   "author": "JB Ladera (https://github.com/minidomo)",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "@types/ws": "^6.0.1",
+    "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.0.0",
     "moment": "^2.24.0",
     "winston": "^3.2.1",
     "youtube-playlist": "^1.0.2",
     "youtube-search": "^1.1.4",
     "yt-search": "^0.4.1",
-    "ytdl-core": "^0.29.4",
+    "ytdl-core": "^0.29.5",
+    "ytdl-core-discord": "^1.0.3",
     "bufferutil": "^4.0.1",
     "libsodium-wrappers": "^0.7.5",
     "opusscript": "0.0.6"

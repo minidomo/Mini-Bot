@@ -1,11 +1,11 @@
-import Emotes from './Emotes';
-import Hex from './Hex';
-import Logger from './Logger';
-import Message from './Message';
-import Transform from './Transform';
-import Youtube from './Youtube';
+import Emotes = require('./Emotes');
+import Hex = require('./Hex');
+import Logger = require('./Logger');
+import Message = require('./Message');
+import Transform = require('./Transform');
+import Youtube = require('./Youtube');
 
-export default {
+export = {
     Emotes: Emotes,
     Hex: Hex,
     Logger: Logger,

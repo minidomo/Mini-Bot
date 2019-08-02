@@ -1,4 +1,4 @@
-import SongCollection from './SongCollection';
+import SongCollection = require('./SongCollection');
 
 class PlaylistManager {
     playlists: { [key: string]: SongCollection };
@@ -50,4 +50,4 @@ class PlaylistManager {
     }
 }
 
-export default PlaylistManager;
+export = PlaylistManager;

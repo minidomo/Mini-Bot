@@ -1,5 +1,5 @@
-import winston from 'winston';
-import moment from 'moment';
+import winston = require('winston');
+import moment = require('moment');
 
 // https://stackoverflow.com/questions/47231677/how-to-log-full-stack-trace-with-winston-3
 const errorStackFormat = winston.format(info => {
@@ -18,4 +18,4 @@ const logger = winston.createLogger({
     )
 });
 
-export default logger;
+export = logger;

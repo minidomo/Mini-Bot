@@ -1,11 +1,11 @@
-import Discord from 'discord.js';
-import Settings from '../../structs/Settings';
-import Util from '../../util/Util';
-import fs from 'fs';
+import Discord = require('discord.js');
+import Settings = require('../../structs/Settings');
+import Util = require('../../util/Util');
+import fs = require('fs');
 
 const { object: settings } = Settings;
 
-export default {
+export = {
     name: 'pfile',
     description: 'Returns a file containing the list of playlists/songs.',
     usage: 'pfile <?playlist name>',
@@ -13,15 +13,16 @@ export default {
         if (args.length === 0)
             return true;
         const [name] = args;
-        const playlists = settings.get(msg.guild.id).playlists;
+        const playlists = settings.get(msg.guild!.id).playlists;
         if (playlists.has(name))
             return true;
         Util.Message.playlistNotFound(msg, name);
         return false;
     },
     async execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
-        const playlists = settings.get(msg.guild.id).playlists;
-        let filename = `${msg.guild.id}-PLAYLIST`, body;
+        const guild = msg.guild!;
+        const playlists = settings.get(guild.id).playlists;
+        let filename = `${guild.id}-PLAYLIST`, body;
         if (args.length === 0) {
             filename += '.json';
             body = JSON.stringify(playlists.getElement(), null, 4);

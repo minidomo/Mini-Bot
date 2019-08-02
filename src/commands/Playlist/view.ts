@@ -1,13 +1,13 @@
-import Discord from 'discord.js';
-import Settings from '../../structs/Settings';
-import Util from '../../util/Util';
+import Discord = require('discord.js');
+import Settings = require('../../structs/Settings');
+import Util = require('../../util/Util');
 
 const { object: settings } = Settings;
 
 const NAME_LIMIT = 13;
 const DESCRIPTION_LIMIT = 2048;
 
-export default {
+export = {
     name: 'view',
     description: 'View all or a specific playlist.',
     usage: 'view <?playlist name>',
@@ -15,15 +15,16 @@ export default {
         if (args.length === 0)
             return true;
         const [name] = args;
-        const playlists = settings.get(msg.guild.id).playlists;
+        const playlists = settings.get(msg.guild!.id).playlists;
         if (playlists.has(name))
             return true;
         Util.Message.playlistNotFound(msg, name);
         return false;
     },
     execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
-        const playlists = settings.get(msg.guild.id).playlists;
-        const embed = new Discord.RichEmbed()
+        const guild = msg.guild!;
+        const playlists = settings.get(guild.id).playlists;
+        const embed = new Discord.MessageEmbed()
             .setColor(Util.Hex.generateNumber())
         let description = '';
         let ellipses = false;

@@ -32,4 +32,4 @@ class Song {
     }
 }
 
-export default Song;
+export = Song;

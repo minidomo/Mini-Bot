@@ -1,5 +1,5 @@
-import Structs from '../structs/Structs';
-import Logger from '../util/Logger';
+import Structs = require('../structs/Structs');
+import Logger = require('../util/Logger');
 
 const { Client, Settings, GuildSettings } = Structs;
 const { object: settings } = Settings;

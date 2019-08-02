@@ -1,21 +1,22 @@
-import faq from './Other/faq';
-import setprefix from './Other/setprefix';
-import prefix from './Other/prefix';
-import create from './Playlist/create';
-import delete_command from './Playlist/delete';
-import add from './Playlist/add';
-import remove from './Playlist/remove';
-import view from './Playlist/view';
-import rename from './Playlist/rename';
-import pfile from './Playlist/pfile';
-import pplay from './Music/pplay';
-import play from './Music/play';
-import queue from './Music/queue';
-import qfile from './Music/qfile';
-import skip from './Music/skip';
-import stop from './Music/stop';
-import setactivity from './Owner/setactivity';
-import help from './Other/help';
+import faq = require('./Other/faq');
+import setprefix = require('./Other/setprefix');
+import prefix = require('./Other/prefix');
+import create = require('./Playlist/create');
+import delete_command = require('./Playlist/delete');
+import add = require('./Playlist/add');
+import remove = require('./Playlist/remove');
+import view = require('./Playlist/view');
+import rename = require('./Playlist/rename');
+import pfile = require('./Playlist/pfile');
+import pplay = require('./Music/pplay');
+import play = require('./Music/play');
+import queue = require('./Music/queue');
+import qfile = require('./Music/qfile');
+import skip = require('./Music/skip');
+import stop = require('./Music/stop');
+import setactivity = require('./Owner/setactivity');
+import repeat = require('./Music/repeat');
+import help = require('./Other/help');
 
 class CommandMap extends Map<string, any>{
     constructor() {
@@ -45,8 +46,9 @@ const commands = new CommandMap()
     .set(qfile.name, qfile)
     .set(skip.name, skip)
     .set(stop.name, stop)
-    .set(setactivity.name, setactivity);
+    .set(setactivity.name, setactivity)
+    .set(repeat.name, repeat);
 
 help.load(commands);
 
-export default commands;
+export = commands;

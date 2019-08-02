@@ -1,10 +1,10 @@
-import Discord from 'discord.js';
-import Settings from '../../structs/Settings';
-import Util from '../../util/Util';
+import Discord = require('discord.js');
+import Settings = require('../../structs/Settings');
+import Util = require('../../util/Util');
 
 const { object: settings } = Settings;
 
-export default {
+export = {
     name: 'rename',
     description: 'Renames a playlist.',
     usage: 'rename <current name> <new name>',
@@ -14,7 +14,7 @@ export default {
             return false;
         }
         const [current, newname] = args;
-        const playlists = settings.get(msg.guild.id).playlists;
+        const playlists = settings.get(msg.guild!.id).playlists;
         if (playlists.has(current)) {
             if (playlists.has(newname)) {
                 Util.Message.playlistAlreadyExists(msg, newname);
@@ -28,7 +28,7 @@ export default {
     },
     execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         const [current, newname] = args;
-        const playlist = settings.get(msg.guild.id).playlists;
+        const playlist = settings.get(msg.guild!.id).playlists;
         playlist.change(current, newname);
         msg.channel.send(`playlist \`${current}\` has been renamed to \`${newname}\``);
     }

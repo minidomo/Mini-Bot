@@ -1,7 +1,7 @@
-import Discord from 'discord.js';
-import Settings from '../structs/Settings';
+import Discord = require( 'discord.js');
+import Settings = require( '../structs/Settings');
 
-export default {
+export = {
     async playlistNotFound(msg: Discord.Message, name: string) {
         return await msg.channel.send(`playlist \`${name}\` was not found`);
     },
@@ -9,7 +9,7 @@ export default {
         return await msg.channel.send(`playlist \`${name}\` already exists`);
     },
     async correctUsage(msg: Discord.Message, usage: string) {
-        return await msg.channel.send(`Correct usage is \`${Settings.object.get(msg.guild.id).prefix}${usage}\``);
+        return await msg.channel.send(`Correct usage is \`${Settings.object.get(msg.guild!.id).prefix}${usage}\``);
     },
     async userMustBeInVoiceChannel(msg: Discord.Message) {
         return await msg.channel.send('You must be in a voice channel to use this command');

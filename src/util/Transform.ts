@@ -9,7 +9,7 @@ const hhmmss = (secs: string | number) => {
     return `${pad(hours)}:${pad(min)}:${pad(seconds)}`;
 };
 
-export default {
+export = {
     secToHHMMSS(sec: string | number) {
         return hhmmss(sec);
     },

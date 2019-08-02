@@ -1,9 +1,9 @@
-import Client from '../structs/Client';
+import Client = require('../structs/Client');
 
-Client.on('voiceStateUpdate', (oldMember, newMember) => {
-    if (newMember.user.id === Client.user.id) {
-        if (!newMember.voiceChannelID) {
-            const voiceConnection = Client.voiceConnections.get(newMember.guild.id);
+Client.on('voiceStateUpdate', (oldState, newState) => {
+    if (newState.member!.id === Client.user!.id) {
+        if (!newState.channelID) {
+            const voiceConnection = Client.voice!.connections.get(newState.guild.id);
             if (voiceConnection)
                 voiceConnection.disconnect();
         }

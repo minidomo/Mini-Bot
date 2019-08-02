@@ -1,7 +1,13 @@
-import { Client } from 'discord.js';
+import Discord = require('discord.js');
+import Arguments = require('./Arguments');
 
-const client = new Client();
+const client = new Discord.Client();
 
-client.login(process.env.BOT_TOKEN);
+if (Arguments.debug)
+    client.on('debug', console.log);
 
-export default client;
+const token = Arguments.production ? process.env.PROD_BOT_TOKEN : process.env.TEST_BOT_TOKEN;
+
+client.login(token);
+
+export = client;
