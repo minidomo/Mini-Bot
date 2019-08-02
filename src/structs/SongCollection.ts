@@ -188,10 +188,25 @@ class SongCollection {
         this.list.splice(newpos, 0, song);
     }
 
+    shuffle(firstPos: number, secondPos: number) {
+        const fpos = Math.max(0, firstPos);
+        const spos = Math.min(this.size() - 1, secondPos);
+        const repetitions = (spos - fpos + 1) * 5;
+        for (let x = 0; x < repetitions; x++) {
+            const first = random(fpos, spos);
+            const second = random(fpos, spos);
+            this.swap(first, second);
+        }
+    }
+
     getElement() {
         return this.list.filter(song => song.author && song.duration && song.id && song.title)
             .map(song => song.getElement());
     }
 }
+
+const random = (r1: number, r2: number) => {
+    return Math.floor(Math.random() * (r2 - r1 + 1)) + r1;
+};
 
 export = SongCollection;

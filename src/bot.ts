@@ -25,6 +25,7 @@ require('./listeners/guildCreate');
 require('./listeners/guildDelete');
 require('./listeners/voiceStatusUpdate');
 
+require('./commands/Music/shuffle');
 require('./commands/Music/repeat');
 require('./commands/Owner/setactivity');
 require('./commands/Music/stop');

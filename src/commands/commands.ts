@@ -16,6 +16,7 @@ import skip = require('./Music/skip');
 import stop = require('./Music/stop');
 import setactivity = require('./Owner/setactivity');
 import repeat = require('./Music/repeat');
+import shuffle = require('./Music/shuffle');
 import help = require('./Other/help');
 
 class CommandMap extends Map<string, any>{
@@ -47,7 +48,8 @@ const commands = new CommandMap()
     .set(skip.name, skip)
     .set(stop.name, stop)
     .set(setactivity.name, setactivity)
-    .set(repeat.name, repeat);
+    .set(repeat.name, repeat)
+    .set(shuffle.name, shuffle);
 
 help.load(commands);
 
