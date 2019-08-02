@@ -20,8 +20,11 @@ export = {
         return trimmed;
     },
     ensureFormatUrl(url: string) {
-        if (url.startsWith('<') && url.endsWith('>'))
-            return url.substring(1, url.length - 1);
-        return url;
+        let res = url;
+        if (res.startsWith('<'))
+            res = res.substr(1);
+        if (res.endsWith('>'))
+            res = res.substr(0, res.length - 1);
+        return res;
     }
 };
