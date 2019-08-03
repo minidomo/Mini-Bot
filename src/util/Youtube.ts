@@ -105,10 +105,13 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
     if (Arguments.saveMp3 && idSet) {
         const path = `${__dirname}/../../save/songs/${first.id}.mp3`;
         if (!idSet.has(first.id)) {
-            ytdl(url.video(first.id), { filter: "audioonly", quality: "highestaudio" }).pipe(fs.createWriteStream(path));
+            const stream = ytdl(url.video(first.id), { filter: "audioonly", quality: "highestaudio" });
+            stream.pipe(fs.createWriteStream(path));
             idSet.add(first.id);
+            dispatcher = voiceConnection.play(stream);
+        } else {
+            dispatcher = voiceConnection.play(path, defaultOptions);
         }
-        dispatcher = voiceConnection.play(path, defaultOptions);
     } else {
         const stream = await ytdl_discord(url.video(first.id));
         dispatcher = voiceConnection.play(stream, { type: 'opus', ...defaultOptions });
