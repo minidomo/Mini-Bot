@@ -39,8 +39,7 @@ const url = {
     playlist(id: string) {
         return `https://www.youtube.com/playlist?list=${id}`;
     },
-    PLAYLIST_VALID_REGEX: /^(?:https?:\/\/)?(?:www\.)?youtube\.com(?:\S+)?$/,
-    PLAYLIST_PARSE_REGEX: /[&?]list=([a-zA-Z0-9_-]+)/
+    PLAYLIST_REGEX: /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/.*list=([a-zA-Z0-9_-]+).*$/
 }
 
 const search = async (title: string, maxQueries: number, useHttp: boolean = false) => {
@@ -117,15 +116,15 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
         dispatcher = voiceConnection.play(stream, { type: 'opus', ...defaultOptions });
     }
     dispatcher.on('error', err => {
-        console.log(`[ERROR]\n${err.stack}`);
+        Logger.info(`[ERROR]\n${err.stack}`);
     }).on('debug', info => {
-        console.log(`[DEBUG] - ${info}`);
+        Logger.info(`[DEBUG] - ${info}`);
     }).once('speaking', val => {
-        console.log(`[SPEAKING] - ${val}`);
+        Logger.info(`[SPEAKING] - ${val}`);
     }).once('start', () => {
         const vid = queue.first();
         const channel = Client.channels.get(channelId);
-        if (vid.id && channel && channel.type === 'text') {
+        if (vid.id && channel && channel.type === 'text' && !queue.quiet) {
             const textChannel = channel as Discord.TextChannel;
             const description = `Playing [${vid.title}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
             const embed = new Discord.MessageEmbed()

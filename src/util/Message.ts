@@ -1,5 +1,5 @@
-import Discord = require( 'discord.js');
-import Settings = require( '../structs/Settings');
+import Discord = require('discord.js');
+import Settings = require('../structs/Settings');
 
 export = {
     async playlistNotFound(msg: Discord.Message, name: string) {
@@ -25,5 +25,8 @@ export = {
     },
     async mustBeAdmin(msg: Discord.Message) {
         return await msg.channel.send('You must be admin to use this command.');
+    },
+    async queueMustBeSize(msg: Discord.Message, size: number) {
+        return await msg.channel.send(`The queue must have at least ${size} song(s).`);
     }
 };

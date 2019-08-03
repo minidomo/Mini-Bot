@@ -149,8 +149,8 @@ class SongCollection {
                     if (await func(vid.id!))
                         count++;
                 }
-            } else if (Youtube.url.PLAYLIST_VALID_REGEX.test(possibleUrl)) {
-                const match = Youtube.url.PLAYLIST_PARSE_REGEX.exec(possibleUrl);
+            } else if (Youtube.url.PLAYLIST_REGEX.test(possibleUrl)) {
+                const match = Youtube.url.PLAYLIST_REGEX.exec(possibleUrl);
                 if (match && match[1]) {
                     const res = Youtube.url.playlist(match[1]);
                     const { data } = await Youtube.ytplaylist(res, 'id');
