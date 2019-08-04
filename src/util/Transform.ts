@@ -26,5 +26,11 @@ export = {
         if (res.endsWith('>'))
             res = res.substr(0, res.length - 1);
         return res;
+    },
+    replaceAll(text: string, searchValue: RegExp, replaceValue: string) {
+        let ret = text;
+        while (searchValue.test(ret))
+            ret = ret.replace(searchValue, replaceValue);
+        return ret;
     }
 };

@@ -2,20 +2,25 @@ import Discord = require('discord.js');
 import Settings = require('../../structs/Settings');
 import Util = require('../../util/Util');
 import Client = require('../../structs/Client');
+import Song = require('../../structs/Song');
 
 const { object: settings } = Settings;
 
 const DESCRIPTION_LIMIT = 2048;
-const NAME_LIMIT = 17;
+const NAME_LIMIT = 70;
 
 export = {
     name: 'queue',
-    description: 'Shows the current queue.',
-    usage: 'queue',
-    validate() {
+    description: 'Shows the current queue starting at a given position.',
+    usage: 'queue <?position>',
+    validate(msg: Discord.Message, { args }: { base: string, args: string[] }) {
+        if (args.length > 0 && !/^\d+$/.test(args[0])) {
+            Util.Message.correctUsage(msg, this.usage);
+            return false;
+        }
         return true;
     },
-    execute(msg: Discord.Message) {
+    execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         const guild = msg.guild!;
         const embed = new Discord.MessageEmbed()
             .setColor(Util.Hex.generateNumber());
@@ -26,10 +31,19 @@ export = {
         if (arr.length === 0)
             description = '¯\\\_(ツ)\_/¯';
         else {
-            description = `\`${isPlaying(guild.id) ? '⋆' : '•'}\` \`${Util.Transform.limitText(arr[0].title!, NAME_LIMIT)}\` \`${arr[0].duration}\`\n`;
-            for (let x = 1; x < arr.length; x++) {
+            let startPos = 0;
+            if (args.length > 0) {
+                const pos = parseInt(args[0]);
+                if (pos >= 0 && pos <= queue.size() - 1)
+                    startPos = pos;
+            }
+            if (startPos === 0) {
+                description = `\`${isPlaying(guild.id) ? '⋆' : '•'}\` [\`${fixTitle(arr[0].title!)}\`](${Util.Youtube.url.video(arr[0].id!)}) \`${arr[0].duration}\`\n`;
+                startPos++;
+            }
+            for (let x = startPos; x < arr.length; x++) {
                 const song = arr[x];
-                const str = `\`${x}\` \`${Util.Transform.limitText(song.title!, NAME_LIMIT)}\` \`${song.duration}\`\n`;
+                const str = `\`${x}\` [\`${fixTitle(song.title!)}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
                 if (description.length + str.length <= DESCRIPTION_LIMIT - 3) {
                     description += str;
                 } else {
@@ -42,6 +56,13 @@ export = {
             .setDescription(description);
         msg.channel.send(embed);
     }
+};
+
+const fixTitle = (title: string) => {
+    let ret = Util.Transform.replaceAll(title, /\[/g, '⦍');
+    ret = Util.Transform.replaceAll(ret, /]/g, '⦎');
+    ret = Util.Transform.limitText(ret, NAME_LIMIT);
+    return ret;
 };
 
 const isPlaying = (guildId: string) => {

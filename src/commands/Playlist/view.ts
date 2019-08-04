@@ -4,22 +4,28 @@ import Util = require('../../util/Util');
 
 const { object: settings } = Settings;
 
-const NAME_LIMIT = 13;
+const PLAYIST_NAME_LIMIT = 30;
+const NAME_LIMIT = 70;
 const DESCRIPTION_LIMIT = 2048;
 
 export = {
     name: 'view',
     description: 'View all or a specific playlist.',
-    usage: 'view <?playlist name>',
+    usage: 'view <?playlist name> <?position>',
     validate(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         if (args.length === 0)
             return true;
         const [name] = args;
         const playlists = settings.get(msg.guild!.id).playlists;
-        if (playlists.has(name))
-            return true;
-        Util.Message.playlistNotFound(msg, name);
-        return false;
+        if (!playlists.has(name)) {
+            Util.Message.playlistNotFound(msg, name);
+            return false;
+        }
+        if (args.length > 2 && !/^\d+$/.test(args[1])) {
+            Util.Message.correctUsage(msg, this.usage);
+            return false;
+        }
+        return true;
     },
     execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         const guild = msg.guild!;
@@ -27,30 +33,35 @@ export = {
         const embed = new Discord.MessageEmbed()
             .setColor(Util.Hex.generateNumber())
         let description = '';
-        let ellipses = false;
         if (args.length === 0) {
             const names = playlists.names();
             for (const name of names) {
                 const playlist = playlists.get(name);
-                const val = `${name} \`${playlist.size()} song(s)\`\n`
+                const val = `${Util.Transform.limitText(name, PLAYIST_NAME_LIMIT)} \`${playlist.size()} song(s)\`\n`
                 if (description.length + val.length <= DESCRIPTION_LIMIT - 3)
                     description += val;
-                else if (!ellipses) {
+                else {
                     description += '...';
-                    ellipses = true;
+                    break;
                 }
             }
             embed.setTitle(`${playlists.size()} Playlist(s)`)
         } else {
-            const [name] = args;
+            const name = args[0];
             const playlist = playlists.get(name);
             const arr = playlist.list;
-            for (const song of arr) {
-                const val = `\`${Util.Transform.limitText(song.title!, NAME_LIMIT)}\` `
-                    + `\`${song.id}\`\n`;
-                if (description.length + val.length <= DESCRIPTION_LIMIT - 3)
-                    description += val;
-                else {
+            let startPos = 0;
+            if (args.length > 1) {
+                const pos = parseInt(args[1]);
+                if (pos >= 0 && pos <= arr.length - 1)
+                    startPos = pos;
+            }
+            for (let x = startPos; x < arr.length; x++) {
+                const song = arr[x];
+                const str = `\`${x}\` [\`${fixTitle(song.title!)}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
+                if (description.length + str.length <= DESCRIPTION_LIMIT - 3) {
+                    description += str;
+                } else {
                     description += '...';
                     break;
                 }
@@ -60,4 +71,11 @@ export = {
         embed.setDescription(description);
         msg.channel.send(embed);
     }
+};
+
+const fixTitle = (title: string) => {
+    let ret = Util.Transform.replaceAll(title, /\[/g, '⦍');
+    ret = Util.Transform.replaceAll(ret, /]/g, '⦎');
+    ret = Util.Transform.limitText(ret, NAME_LIMIT);
+    return ret;
 };
