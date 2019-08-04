@@ -40,7 +40,7 @@ embed.addField(
 embed.addField(
     `plview | Why is only part of the title shown?`,
     `Due to the limited amount of characters able to send in this message, `
-    + `only the first ${13} characters are shown.`
+    + `only the first ${70} characters are shown.`
 );
 
 embed.addField(
