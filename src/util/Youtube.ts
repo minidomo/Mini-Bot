@@ -39,7 +39,7 @@ const url = {
     playlist(id: string) {
         return `https://www.youtube.com/playlist?list=${id}`;
     },
-    PLAYLIST_REGEX: /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/.*list=([a-zA-Z0-9_-]+).*$/
+    PLAYLIST_REGEX: /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/.*list=([\w-]+).*$/
 }
 
 const search = async (title: string, maxQueries: number, useHttp: boolean = false) => {
@@ -105,7 +105,8 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
         const path = `${__dirname}/../../save/songs/${first.id}.mp3`;
         if (!idSet.has(first.id)) {
             const stream = await ytdl_discord(url.video(first.id));
-            ytdl(url.video(first.id), { filter: "audioonly", quality: "highestaudio" }).pipe(fs.createWriteStream(path));
+            stream.pipe(fs.createWriteStream(`${__dirname}/../../save/songs/${first.id}.ogg`));
+            ytdl(url.video(first.id), { filter: "audioonly" }).pipe(fs.createWriteStream(path));
             idSet.add(first.id);
             dispatcher = voiceConnection.play(stream, { type: 'opus', ...defaultOptions });
         } else {

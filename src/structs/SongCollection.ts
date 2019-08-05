@@ -141,15 +141,7 @@ class SongCollection {
         for (const elem of input) {
             const validId = Youtube.ytdl.validateID(elem);
             const possibleUrl = Transform.ensureFormatUrl(elem);
-            if (validId || Youtube.ytdl.validateURL(possibleUrl)) {
-                if (await func(validId ? elem : possibleUrl))
-                    count++;
-                else if (validId) {
-                    const [vid] = await Youtube.search(elem, 1);
-                    if (await func(vid.id!))
-                        count++;
-                }
-            } else if (Youtube.url.PLAYLIST_REGEX.test(possibleUrl)) {
+            if (Youtube.url.PLAYLIST_REGEX.test(possibleUrl)) {
                 const match = Youtube.url.PLAYLIST_REGEX.exec(possibleUrl);
                 if (match && match[1]) {
                     const res = Youtube.url.playlist(match[1]);
@@ -157,6 +149,14 @@ class SongCollection {
                     for (const id of data.playlist)
                         if (await func(id as string))
                             count++;
+                }
+            } else if (validId || Youtube.ytdl.validateURL(possibleUrl)) {
+                if (await func(validId ? elem : possibleUrl))
+                    count++;
+                else if (validId) {
+                    const [vid] = await Youtube.search(elem, 1);
+                    if (await func(vid.id!))
+                        count++;
                 }
             } else {
                 const vids = await Youtube.search(elem, 1);
