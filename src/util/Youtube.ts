@@ -128,15 +128,6 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
     });
     const addEvents = (dispatcher: Discord.StreamDispatcher) => {
         dispatcher
-            .on('error', err => {
-                Logger.info(`[ERROR]\n${err.stack}`);
-            })
-            .on('debug', info => {
-                Logger.info(`[DEBUG] - ${info}`);
-            })
-            .once('speaking', val => {
-                Logger.info(`[SPEAKING] - ${val}`);
-            })
             .once('start', () => {
                 const vid = queue.first();
                 const channel = Client.channels.get(channelId);
@@ -172,7 +163,6 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
             const writeStream = stream.pipe(fs.createWriteStream(path))
                 .on('open', async () => {
                     queue.download(writeStream, path);
-                    Logger.info(`OPENED ${first.id}`);
                     await Time.delay(2000);
                     dispatcher = voiceConnection.play(path, defaultOptions);
                     addEvents(dispatcher);

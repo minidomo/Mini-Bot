@@ -13,7 +13,6 @@ class MP3 {
         let done = false;
         writeStream.on('close', () => {
             if (!done) {
-                console.log('CLOSING');
                 queue.downloading = undefined;
                 done = true;
             }
