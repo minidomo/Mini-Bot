@@ -8,11 +8,13 @@ import GuildSettings = require('./GuildSettings');
 import Settings = require('./Settings');
 import Queue = require('./Queue');
 import RepeatState = require('./RepeatState');
+import MP3 = require('./MP3');
 
 export = {
     Client: Client,
     Arguments: Arguments,
     GuildSettings: GuildSettings,
+    MP3: MP3,
     PlaylistManager: PlaylistManager,
     Queue: Queue,
     RepeatState: RepeatState,

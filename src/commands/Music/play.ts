@@ -29,6 +29,7 @@ export = {
             if (queue.size() > 0)
                 Util.Youtube.play(settings, guild.id, msg.channel.id);
         } else {
+            const message = await msg.channel.send(`Processing data. This may take several seconds/minutes.`) as Discord.Message;
             const added = await queue.addInput(args);
             if (queue.size() > 0)
                 Util.Youtube.play(settings, guild.id, msg.channel.id);
@@ -37,6 +38,7 @@ export = {
                 .setColor(Util.Hex.generateNumber())
                 .setDescription(description);
             msg.channel.send(embed);
+            message.delete();
         }
     }
 };

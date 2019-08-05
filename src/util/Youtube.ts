@@ -1,5 +1,6 @@
 import Logger = require('./Logger');
 import Hex = require('./Hex');
+import Time = require('./Time');
 import Song = require('../structs/Song');
 import Settings = require('../structs/Settings');
 import Client = require('../structs/Client');
@@ -7,20 +8,28 @@ import Arguments = require('../structs/Arguments');
 
 import util = require('util');
 import fs = require('fs');
+import querystring = require('querystring');
 
 import Discord = require('discord.js');
+import Axios = require('axios');
 import apisearch = require('youtube-search');
 import ytSearch = require('yt-search');
 import ytdl = require('ytdl-core');
-import ytplaylist = require('youtube-playlist');
 import ytdl_discord = require('ytdl-core-discord');
 
+const axios = Axios.default;
 const httpsearch = util.promisify(ytSearch);
-const opts = {
+const search_opts = {
     type: 'video',
     safeSearch: 'none',
-    key: process.env.YOUTUBE_API_KEY,
-    maxResults: 5
+    maxResults: 5,
+    key: process.env.YOUTUBE_API_KEY
+};
+const playlist_opts = {
+    part: 'contentDetails',
+    maxResults: 50,
+    pageToken: undefined,
+    key: process.env.YOUTUBE_API_KEY
 };
 
 const url = {
@@ -43,10 +52,10 @@ const url = {
 }
 
 const search = async (title: string, maxQueries: number, useHttp: boolean = false) => {
-    opts.maxResults = maxQueries;
-    if (opts.key && !useHttp) {
+    search_opts.maxResults = maxQueries;
+    if (search_opts.key && !useHttp) {
         try {
-            const { results } = await apisearch(title, opts);
+            const { results } = await apisearch(title, search_opts);
             let ret = [];
             for (const vid of results) {
                 ret.push(new Song({
@@ -65,7 +74,7 @@ const search = async (title: string, maxQueries: number, useHttp: boolean = fals
         if (typeof res !== 'undefined') {
             const { videos } = res;
             let ret = [];
-            for (let x = 0; x < opts.maxResults && x < videos.length; x++) {
+            for (let x = 0; x < search_opts.maxResults && x < videos.length; x++) {
                 const vid = videos[x];
                 ret.push(new Song({
                     title: vid.title,
@@ -100,56 +109,114 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
     const first = queue.first();
     if (!first.id)
         return;
+    const removeFile = async () => {
+        if (queue.downloading) {
+            queue.downloading.writeStream.close();
+            const { path } = queue.downloading;
+            queue.downloading.writeStream.emit('close');
+            try {
+                await Time.delay(1000);
+                fs.unlinkSync(path);
+            } catch (err) {
+                Logger.info('error deleting file');
+            }
+        }
+    }
+    voiceConnection.on('disconnect', async () => {
+        if (Arguments.saveMp3)
+            await removeFile();
+    });
+    const addEvents = (dispatcher: Discord.StreamDispatcher) => {
+        dispatcher
+            .on('error', err => {
+                Logger.info(`[ERROR]\n${err.stack}`);
+            })
+            .on('debug', info => {
+                Logger.info(`[DEBUG] - ${info}`);
+            })
+            .once('speaking', val => {
+                Logger.info(`[SPEAKING] - ${val}`);
+            })
+            .once('start', () => {
+                const vid = queue.first();
+                const channel = Client.channels.get(channelId);
+                if (vid.id && channel && channel.type === 'text' && !queue.quiet) {
+                    const textChannel = channel as Discord.TextChannel;
+                    const description = `Playing [${vid.title}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
+                    const embed = new Discord.MessageEmbed()
+                        .setColor(Hex.generateNumber())
+                        .setDescription(description);
+                    textChannel.send(embed);
+                }
+            })
+            .once('finish', async () => {
+                if (Arguments.saveMp3)
+                    removeFile();
+                if (queue.repeat.isOn()) {
+                    if (queue.repeat.queue)
+                        queue.move(0, queue.size() - 1);
+                } else {
+                    queue.poll();
+                }
+                if (queue.size() > 0) {
+                    play(settings, guildId, channelId);
+                }
+            });
+    };
     let dispatcher: Discord.StreamDispatcher;
     if (Arguments.saveMp3 && idSet) {
         const path = `${__dirname}/../../save/songs/${first.id}.mp3`;
         if (!idSet.has(first.id)) {
-            const stream = await ytdl_discord(url.video(first.id));
-            stream.pipe(fs.createWriteStream(`${__dirname}/../../save/songs/${first.id}.ogg`));
-            ytdl(url.video(first.id), { filter: "audioonly" }).pipe(fs.createWriteStream(path));
             idSet.add(first.id);
-            dispatcher = voiceConnection.play(stream, { type: 'opus', ...defaultOptions });
+            const stream = ytdl(url.video(first.id), { filter: "audioonly", quality: "highestaudio" });
+            const writeStream = stream.pipe(fs.createWriteStream(path))
+                .on('open', async () => {
+                    queue.download(writeStream, path);
+                    Logger.info(`OPENED ${first.id}`);
+                    await Time.delay(2000);
+                    dispatcher = voiceConnection.play(path, defaultOptions);
+                    addEvents(dispatcher);
+                });
         } else {
             dispatcher = voiceConnection.play(path, defaultOptions);
+            addEvents(dispatcher);
         }
     } else {
         const stream = await ytdl_discord(url.video(first.id));
         dispatcher = voiceConnection.play(stream, { type: 'opus', ...defaultOptions });
+        addEvents(dispatcher);
     }
-    dispatcher.on('error', err => {
-        Logger.info(`[ERROR]\n${err.stack}`);
-    }).on('debug', info => {
-        Logger.info(`[DEBUG] - ${info}`);
-    }).once('speaking', val => {
-        Logger.info(`[SPEAKING] - ${val}`);
-    }).once('start', () => {
-        const vid = queue.first();
-        const channel = Client.channels.get(channelId);
-        if (vid.id && channel && channel.type === 'text' && !queue.quiet) {
-            const textChannel = channel as Discord.TextChannel;
-            const description = `Playing [${vid.title}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
-            const embed = new Discord.MessageEmbed()
-                .setColor(Hex.generateNumber())
-                .setDescription(description);
-            textChannel.send(embed);
+};
+
+const getVideosFromPlaylist = async (id: string) => {
+    const params = { playlistId: id, ...playlist_opts };
+    let result: { [key: string]: any } | undefined;
+    let ret: string[] = [];
+    do {
+        if (result && result.nextPageToken)
+            params.pageToken = result.nextPageToken;
+        let response = await axios.get('https://www.googleapis.com/youtube/v3/playlistItems?' + querystring.stringify(params));
+        result = response.data;
+        if (result) {
+            for (const { contentDetails } of result.items) {
+                const { videoId } = contentDetails;
+                ret.push(videoId);
+            }
         }
-    }).once('finish', () => {
-        if (queue.repeat.isOn()) {
-            if (queue.repeat.queue)
-                queue.move(0, queue.size() - 1);
-        } else {
-            queue.poll();
-        }
-        if (queue.size() > 0) {
-            play(settings, guildId, channelId);
-        }
-    });
+    } while (result && result.nextPageToken);
+    return ret;
 };
 
 export = {
     url,
     ytdl: ytdl,
-    ytplaylist: ytplaylist,
+    async getVideosFromPlaylist(id: string) {
+        try {
+            return await getVideosFromPlaylist(id);
+        } catch (err) {
+            return [];
+        }
+    },
     async search(title: string, maxQueries: number, useHttp: boolean = false) {
         return search(title, maxQueries, useHttp);
     },

@@ -137,31 +137,31 @@ class SongCollection {
 
     async modify(input: string[], add: boolean) {
         let count = 0;
-        const func = add ? this.addId.bind(this) : this.removeId.bind(this);
+        const cb = add ? this.addId.bind(this) : this.removeId.bind(this);
         for (const elem of input) {
             const validId = Youtube.ytdl.validateID(elem);
             const possibleUrl = Transform.ensureFormatUrl(elem);
             if (Youtube.url.PLAYLIST_REGEX.test(possibleUrl)) {
                 const match = Youtube.url.PLAYLIST_REGEX.exec(possibleUrl);
                 if (match && match[1]) {
-                    const res = Youtube.url.playlist(match[1]);
-                    const { data } = await Youtube.ytplaylist(res, 'id');
-                    for (const id of data.playlist)
-                        if (await func(id as string))
+                    const id = match[1];
+                    const ids = await Youtube.getVideosFromPlaylist(id);
+                    for (const id of ids)
+                        if (await cb(id))
                             count++;
                 }
             } else if (validId || Youtube.ytdl.validateURL(possibleUrl)) {
-                if (await func(validId ? elem : possibleUrl))
+                if (await cb(validId ? elem : possibleUrl))
                     count++;
                 else if (validId) {
                     const [vid] = await Youtube.search(elem, 1);
-                    if (await func(vid.id!))
+                    if (await cb(vid.id!))
                         count++;
                 }
             } else {
                 const vids = await Youtube.search(elem, 1);
                 for (const song of vids)
-                    if (await func(song.id!))
+                    if (await cb(song.id!))
                         count++;
             }
         }
