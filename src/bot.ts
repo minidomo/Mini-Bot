@@ -1,5 +1,5 @@
 // loading all files in a specific order to prevent any errors from module.exports not being loaded
-require ('./structs/Arguments');
+require('./structs/Arguments');
 require('./structs/Client');
 require('./structs/Song');
 require('./structs/SongCache');
@@ -27,6 +27,9 @@ require('./listeners/guildCreate');
 require('./listeners/guildDelete');
 require('./listeners/voiceStatusUpdate');
 
+require('./commands/Music/current');
+require('./commands/Music/clear');
+require('./commands/Music/rm');
 require('./commands/Music/quiet');
 require('./commands/Music/shuffle');
 require('./commands/Music/repeat');

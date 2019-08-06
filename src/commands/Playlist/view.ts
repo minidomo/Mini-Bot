@@ -58,7 +58,9 @@ export = {
             }
             for (let x = startPos; x < arr.length; x++) {
                 const song = arr[x];
-                const str = `\`${x}\` [\`${fixTitle(song.title!)}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
+                let title = Util.Youtube.fixTitle(song.title!);
+                title = Util.Transform.limitText(title, NAME_LIMIT);
+                const str = `\`${x}\` [\`${title}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
                 if (description.length + str.length <= DESCRIPTION_LIMIT - 3) {
                     description += str;
                 } else {
@@ -71,11 +73,4 @@ export = {
         embed.setDescription(description);
         msg.channel.send(embed);
     }
-};
-
-const fixTitle = (title: string) => {
-    let ret = Util.Transform.replaceAll(title, /\[/g, '⦍');
-    ret = Util.Transform.replaceAll(ret, /]/g, '⦎');
-    ret = Util.Transform.limitText(ret, NAME_LIMIT);
-    return ret;
 };

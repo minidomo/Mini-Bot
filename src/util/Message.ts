@@ -28,5 +28,8 @@ export = {
     },
     async queueMustBeSize(msg: Discord.Message, size: number) {
         return await msg.channel.send(`The queue must have at least ${size} song(s).`);
+    },
+    async mustBeANumberWithin(msg: Discord.Message, lb: number, ub: number) {
+        return await msg.channel.send(`The number must be between ${lb} and ${ub}`);
     }
 };

@@ -30,7 +30,7 @@ export = {
         const queue = settings.get(guild.id).queue;
         let description = '';
         const vid = queue.first();
-        description = `Skipping [${vid.title}](${Util.Youtube.url.video(vid.id!)}) by ${vid.author} \`${vid.duration}\``;
+        description = `Skipping [${Util.Youtube.fixTitle(vid.title!)}](${Util.Youtube.url.video(vid.id!)}) by ${vid.author} \`${vid.duration}\``;
         const voiceConnection = Client.voice!.connections.get(guild.id)!;
         voiceConnection.dispatcher.end();
         const embed = new Discord.MessageEmbed()

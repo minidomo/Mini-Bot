@@ -1,6 +1,7 @@
 import Logger = require('./Logger');
 import Hex = require('./Hex');
 import Time = require('./Time');
+import Transform = require('./Transform');
 import Song = require('../structs/Song');
 import Settings = require('../structs/Settings');
 import Client = require('../structs/Client');
@@ -133,7 +134,7 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
                 const channel = Client.channels.get(channelId);
                 if (vid.id && channel && channel.type === 'text' && !queue.quiet) {
                     const textChannel = channel as Discord.TextChannel;
-                    const description = `Playing [${vid.title}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
+                    const description = `Playing [${fixTitle(vid.title!)}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
                     const embed = new Discord.MessageEmbed()
                         .setColor(Hex.generateNumber())
                         .setDescription(description);
@@ -197,8 +198,17 @@ const getVideosFromPlaylist = async (id: string) => {
     return ret;
 };
 
+const fixTitle = (title: string) => {
+    let ret = Transform.replaceAll(title, /\[/g, '⦍');
+    ret = Transform.replaceAll(ret, /]/g, '⦎');
+    return ret;
+};
+
 export = {
     url,
+    fixTitle(title: string) {
+        return fixTitle(title);
+    },
     ytdl: ytdl,
     async getVideosFromPlaylist(id: string) {
         try {

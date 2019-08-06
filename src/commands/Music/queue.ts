@@ -38,12 +38,16 @@ export = {
                     startPos = pos;
             }
             if (startPos === 0) {
-                description = `\`${isPlaying(guild.id) ? '⋆' : '•'}\` [\`${fixTitle(arr[0].title!)}\`](${Util.Youtube.url.video(arr[0].id!)}) \`${arr[0].duration}\`\n`;
+                let title = Util.Youtube.fixTitle(arr[0].title!);
+                title = Util.Transform.limitText(title, NAME_LIMIT);
+                description = `\`${isPlaying(guild.id) ? '⋆' : '•'}\` [\`${title}\`](${Util.Youtube.url.video(arr[0].id!)}) \`${arr[0].duration}\`\n`;
                 startPos++;
             }
             for (let x = startPos; x < arr.length; x++) {
                 const song = arr[x];
-                const str = `\`${x}\` [\`${fixTitle(song.title!)}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
+                let title = Util.Youtube.fixTitle(song.title!);
+                title = Util.Transform.limitText(title, NAME_LIMIT);
+                const str = `\`${x}\` [\`${title}\`](${Util.Youtube.url.video(song.id!)}) \`${song.duration}\`\n`;
                 if (description.length + str.length <= DESCRIPTION_LIMIT - 3) {
                     description += str;
                 } else {
@@ -56,13 +60,6 @@ export = {
             .setDescription(description);
         msg.channel.send(embed);
     }
-};
-
-const fixTitle = (title: string) => {
-    let ret = Util.Transform.replaceAll(title, /\[/g, '⦍');
-    ret = Util.Transform.replaceAll(ret, /]/g, '⦎');
-    ret = Util.Transform.limitText(ret, NAME_LIMIT);
-    return ret;
 };
 
 const isPlaying = (guildId: string) => {
