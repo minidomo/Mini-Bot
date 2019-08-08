@@ -100,7 +100,7 @@ if (Arguments.saveMp3) {
     idSet = new Set<string>(savedIds);
 }
 
-const play = async (settings: Settings, guildId: string, channelId: string) => {
+const play = async (settings: Settings, guildId: string) => {
     const voiceConnection = Client.voice!.connections.get(guildId);
     if (!voiceConnection || voiceConnection.dispatcher) {
         return;
@@ -131,7 +131,7 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
         dispatcher
             .once('start', () => {
                 const vid = queue.first();
-                const channel = Client.channels.get(channelId);
+                const channel = Client.channels.get(queue.channelId!);
                 if (vid.id && channel && channel.type === 'text' && !queue.quiet) {
                     const textChannel = channel as Discord.TextChannel;
                     const description = `Playing [${fixTitle(vid.title!)}](${url.video(vid.id)}) by ${vid.author} \`[${vid.duration}]\``;
@@ -151,7 +151,7 @@ const play = async (settings: Settings, guildId: string, channelId: string) => {
                     queue.poll();
                 }
                 if (queue.size() > 0) {
-                    play(settings, guildId, channelId);
+                    play(settings, guildId);
                 }
             });
     };
@@ -220,7 +220,7 @@ export = {
     async search(title: string, maxQueries: number, useHttp: boolean = false) {
         return search(title, maxQueries, useHttp);
     },
-    play(settings: Settings, guildId: string, channelId: string) {
-        play(settings, guildId, channelId);
+    play(settings: Settings, guildId: string) {
+        play(settings, guildId);
     }
 };

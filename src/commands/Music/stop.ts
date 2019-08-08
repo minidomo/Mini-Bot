@@ -24,9 +24,9 @@ export = {
     execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         const guild = msg.guild!;
         let otherInfo = '';
+        const { queue } = settings.get(guild.id);
         if (args.length > 0) {
             if (args[0] === 'clear') {
-                const queue = settings.get(guild.id).queue;
                 queue.clear();
                 otherInfo += 'Queue cleared\n';
             }
@@ -37,6 +37,7 @@ export = {
             .setDescription(`Leaving voice channel ${voiceConnection.channel}\n${otherInfo}`)
             .setFooter(`Commanded by ${msg.author!.tag}`);
         voiceConnection.disconnect();
+        queue.channelId = undefined;
         msg.channel.send(embed);
     }
 };

@@ -19,15 +19,17 @@ export = {
     async execute(msg: Discord.Message, { args }: { base: string, args: string[] }) {
         const guild = msg.guild!;
         const voiceConnection = Client.voice!.connections.get(guild.id);
+        const queue = settings.get(guild.id).queue;
         if (!voiceConnection) {
             const voiceChannel = msg.member!.voice.channel!;
-            if (voiceChannel.joinable)
+            if (voiceChannel.joinable) {
+                queue.channelId = msg.channel.id;
                 await voiceChannel.join();
+            }
         }
-        const queue = settings.get(guild.id).queue;
         if (args.length === 0) {
             if (queue.size() > 0)
-                Util.Youtube.play(settings, guild.id, msg.channel.id);
+                Util.Youtube.play(settings, guild.id);
         } else {
             let added = 0;
             const playlists = settings.get(guild.id).playlists;
@@ -43,7 +45,7 @@ export = {
                 });
             }
             if (queue.size() > 0)
-                Util.Youtube.play(settings, guild.id, msg.channel.id);
+                Util.Youtube.play(settings, guild.id);
             const description = `Added ${added} song(s)`;
             const embed = new Discord.MessageEmbed()
                 .setColor(Util.Hex.generateNumber())

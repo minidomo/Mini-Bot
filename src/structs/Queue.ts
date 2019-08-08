@@ -7,12 +7,14 @@ class Queue extends SongCollection {
     repeat: RepeatState;
     quiet: boolean;
     downloading: MP3 | undefined;
+    channelId: string | undefined;
 
     constructor(data: object[] = []) {
         super(data);
         this.repeat = new RepeatState();
         this.quiet = false;
         this.downloading = undefined;
+        this.channelId = undefined;
     }
 
     quietToggle() {

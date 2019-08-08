@@ -27,6 +27,7 @@ require('./listeners/guildCreate');
 require('./listeners/guildDelete');
 require('./listeners/voiceStatusUpdate');
 
+require('./commands/Music/direct');
 require('./commands/Music/current');
 require('./commands/Music/clear');
 require('./commands/Music/rm');
