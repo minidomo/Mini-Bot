@@ -31,5 +31,8 @@ export = {
     },
     async mustBeANumberWithin(msg: Discord.Message, lb: number, ub: number) {
         return await msg.channel.send(`The number must be between ${lb} and ${ub}`);
+    },
+    async botMustBePaused(msg: Discord.Message) {
+        return await msg.channel.send('The bot is not paused.');
     }
 };

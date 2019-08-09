@@ -2,7 +2,6 @@ import Discord = require('discord.js');
 import Settings = require('../../structs/Settings');
 import Util = require('../../util/Util');
 import Client = require('../../structs/Client');
-import Song = require('../../structs/Song');
 
 const { object: settings } = Settings;
 
@@ -40,7 +39,7 @@ export = {
             if (startPos === 0) {
                 let title = Util.Youtube.fixTitle(arr[0].title!);
                 title = Util.Transform.limitText(title, NAME_LIMIT);
-                description = `\`${isPlaying(guild.id) ? '⋆' : '•'}\` [\`${title}\`](${Util.Youtube.url.video(arr[0].id!)}) \`${arr[0].duration}\`\n`;
+                description = `\`${Util.Bot.isPlayingAudio(guild.id) ? '⋆' : '•'}\` [\`${title}\`](${Util.Youtube.url.video(arr[0].id!)}) \`${arr[0].duration}\`\n`;
                 startPos++;
             }
             for (let x = startPos; x < arr.length; x++) {

@@ -17,6 +17,7 @@ require('./structs/GuildSettings');
 require('./structs/Settings');
 require('./structs/Structs');
 
+require('./util/Bot');
 require('./util/Message');
 require('./util/Emotes');
 require('./util/Util');
@@ -27,6 +28,8 @@ require('./listeners/guildCreate');
 require('./listeners/guildDelete');
 require('./listeners/voiceStatusUpdate');
 
+require('./commands/Music/pause');
+require('./commands/Music/resume');
 require('./commands/Music/direct');
 require('./commands/Music/current');
 require('./commands/Music/clear');

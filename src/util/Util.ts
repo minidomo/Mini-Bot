@@ -5,6 +5,7 @@ import Message = require('./Message');
 import Transform = require('./Transform');
 import Youtube = require('./Youtube');
 import Time = require('./Time');
+import Bot = require('./Bot');
 
 export = {
     Emotes: Emotes,
@@ -13,5 +14,6 @@ export = {
     Message: Message,
     Time: Time,
     Transform: Transform,
-    Youtube: Youtube
+    Youtube: Youtube,
+    Bot: Bot
 };  
