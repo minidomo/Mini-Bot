@@ -34,5 +34,8 @@ export = {
     },
     async botMustBePaused(msg: Discord.Message) {
         return await msg.channel.send('The bot is not paused.');
+    },
+    async custom(msg: Discord.Message, string: string) {
+        return await msg.channel.send(string);
     }
 };

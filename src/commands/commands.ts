@@ -24,6 +24,7 @@ import current = require('./Music/current');
 import direct = require('./Music/direct');
 import pause = require('./Music/pause');
 import resume = require('./Music/resume');
+import move = require('./Music/move');
 import help = require('./Other/help');
 
 class CommandMap extends Map<string, any>{
@@ -63,7 +64,8 @@ const commands = new CommandMap()
     .set(current.name, current)
     .set(direct.name, direct)
     .set(pause.name, pause)
-    .set(resume.name, resume);
+    .set(resume.name, resume)
+    .set(move.name, move);
 
 help.load(commands);
 
