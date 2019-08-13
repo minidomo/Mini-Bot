@@ -37,6 +37,7 @@ npm run <script name>
 
 ## Bot Arguments
 The scripts `start` and `start:prod` start the bot and pass arguments to enable/disable some functionalities.
+
 | Name | Description |
 | - | - |
 | `-p`/`--prod` | Indicates that the bot will use the `PROD_BOT_TOKEN`. |
