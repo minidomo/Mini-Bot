@@ -29,11 +29,6 @@
   "devDependencies": {
     "typescript": "^3.5.3"
   },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.1",
-    "libsodium-wrappers": "^0.7.5",
-    "opusscript": "0.0.6"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MiniDomo/Mini-Bot.git"
