@@ -18,7 +18,7 @@
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "libsodium-wrappers": "^0.7.8",
-    "moment": "^2.28.0",
+    "moment": "^2.29.2",
     "opusscript": "0.0.6",
     "winston": "^3.3.3",
     "youtube-search": "^1.1.4",
